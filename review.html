@@ -1,134 +1,126 @@
-<!DOCTYPE html>
-<html>
+import React from 'react';
+import { Star, Plus, Home, Menu, Calendar, Image as ImageIcon } from 'lucide-react';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
-<head>
-    <title>Reviews Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-</head>
+const ReviewPage = () => {
+const foodReviews = [
+{
+username: "JohnDoe",
+rating: 5,
+images: 4,
+review: "Nama makanan: enak, gurih"
+},
+{
+username: "FoodLover",
+rating: 4,
+images: 3,
+review: "Nama makanan: enak, lezat"
+}
+];
 
-<body class="bg-gray-100 p-4">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header Section -->
-        <header class="bg-white p-6 rounded-t-lg shadow-md mb-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <div class="text-2xl font-bold">Logo</div>
-                </div>
-                <nav class="hidden md:flex space-x-6">
-                    <a href="#" class="text-gray-700 hover:text-gray-900">Home</a>
-                    <a href="#" class="text-gray-700 hover:text-gray-900">Menu</a>
-                    <a href="#" class="text-gray-700 hover:text-gray-900">Reservasi</a>
-                    <a href="#" class="text-gray-700 hover:text-gray-900">Gallery</a>
-                </nav>
-                <div class="flex items-center space-x-4">
-                    <button class="bg-gray-200 p-2 rounded-full">
-                        <i class="fas fa-user"></i>
-                    </button>
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                        + Add Review
-                    </button>
-                </div>
+const restaurantReviews = [
+{
+username: "CulinaryExplorer",
+rating: 5,
+review: "Restoran sangat nyaman"
+},
+{
+username: "DineOut",
+rating: 4,
+review: "Cozy, strategis"
+}
+];
+
+const StarRating = ({ rating }) => (
+<div className="flex gap-1">
+    {[...Array(5)].map((_, i) => (
+    <Star key={i} size={16} className={i < rating ? "fill-yellow-500 text-yellow-500" : "text-gray-300" } />
+    ))}
+</div>
+);
+
+return (
+<div className="max-w-4xl mx-auto">
+    <Card className="mb-4">
+        <CardHeader className="space-y-0 flex flex-row items-center justify-between p-4">
+            <div className="flex items-center space-x-4">
+                <h1 className="text-2xl font-bold">Logo</h1>
             </div>
-        </header>
+            <nav className="flex space-x-6">
+                <Button variant="ghost" className="flex items-center gap-2">
+                    <Home size={20} />
+                    Home
+                </Button>
+                <Button variant="ghost" className="flex items-center gap-2">
+                    <Menu size={20} />
+                    Menu
+                </Button>
+                <Button variant="ghost" className="flex items-center gap-2">
+                    <Calendar size={20} />
+                    Reservasi
+                </Button>
+                <Button variant="ghost" className="flex items-center gap-2">
+                    <ImageIcon size={20} />
+                    Gallery
+                </Button>
+            </nav>
+            <Button className="flex items-center gap-2">
+                <Plus size={20} />
+                Add Review
+            </Button>
+        </CardHeader>
+    </Card>
 
-        <!-- Main Content -->
-        <main class="bg-white rounded-b-lg shadow-md">
-            <!-- Food Reviews Section -->
-            <section class="p-6 border-b border-gray-200">
-                <h2 class="text-xl font-bold mb-6">Food Reviews</h2>
-
-                <!-- Review Item 1 -->
-                <div class="mb-8">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold">Username</h3>
-                            <div class="flex items-center mb-2">
-                                <span class="text-yellow-500">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star text-gray-300"></i>
-                                </span>
+    <Card>
+        <CardContent className="p-6">
+            <section className="mb-8">
+                <h2 className="text-xl font-bold mb-6">Food Reviews</h2>
+                {foodReviews.map((review, index) => (
+                <div key={index} className="mb-8">
+                    <div className="flex items-start space-x-4">
+                        <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
+                            <img src="/api/placeholder/48/48" alt="Profile" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-lg font-semibold">{review.username}</h3>
+                            <StarRating rating={review.rating} />
+                            <div className="grid grid-cols-4 gap-2 my-2">
+                                {[...Array(review.images)].map((_, i) => (
+                                <div key={i} className="w-16 h-16 rounded bg-gray-100 overflow-hidden">
+                                    <img src="/api/placeholder/64/64" alt={`Food ${i + 1}`}
+                                        className="w-full h-full object-cover" />
+                                </div>
+                                ))}
                             </div>
-                            <div class="grid grid-cols-4 gap-2 mb-2">
-                                <div class="w-16 h-16 bg-gray-200 rounded"></div>
-                                <div class="w-16 h-16 bg-gray-200 rounded"></div>
-                                <div class="w-16 h-16 bg-gray-200 rounded"></div>
-                                <div class="w-16 h-16 bg-gray-200 rounded"></div>
-                            </div>
-                            <p class="text-gray-700">Nama makanan: enak, gurih</p>
+                            <p className="text-gray-700">{review.review}</p>
                         </div>
                     </div>
                 </div>
+                ))}
+            </section>
 
-                <!-- Review Item 2 -->
-                <div class="mb-8">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold">Username</h3>
-                            <div class="flex items-center mb-2">
-                                <span class="text-yellow-500">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star text-gray-300"></i>
-                                    <i class="fas fa-star text-gray-300"></i>
-                                </span>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2 mb-2">
-                                <div class="w-16 h-16 bg-gray-200 rounded"></div>
-                                <div class="w-16 h-16 bg-gray-200 rounded"></div>
-                                <div class="w-16 h-16 bg-gray-200 rounded"></div>
-                            </div>
-                            <p class="text-gray-700">Nama makanan: enak, lezat</p>
+            <section className="border-t border-gray-200 pt-6">
+                <h2 className="text-xl font-bold mb-6">Restaurant Reviews</h2>
+                <div className="space-y-6">
+                    {restaurantReviews.map((review, index) => (
+                    <div key={index} className="flex items-start space-x-4">
+                        <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
+                            <img src="/api/placeholder/48/48" alt="Profile" className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500">{review.username}</p>
+                            <StarRating rating={review.rating} />
+                            <p className="text-gray-700">{review.review}</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Restaurant Review Section -->
-                <div class="border-t border-gray-200 pt-6">
-                    <h2 class="text-xl font-bold mb-6">Restaurant Reviews</h2>
-
-                    <!-- Restaurant Review Item -->
-                    <div class="space-y-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
-                            <div>
-                                <div class="text-sm text-gray-500">username</div>
-                                <div class="flex items-center space-x-1 text-yellow-500">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="text-gray-700">Restoran sangat nyaman</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-4">
-                            <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
-                            <div>
-                                <div class="text-sm text-gray-500">username</div>
-                                <div class="flex items-center space-x-1 text-yellow-500">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="text-gray-700">Cozy, strategis</div>
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </section>
-        </main>
-    </div>
-</body>
+        </CardContent>
+    </Card>
+</div>
+);
+};
 
-</html>
+export default ReviewPage;
