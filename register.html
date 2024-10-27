@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+    <title>REGISTER</title>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+      body {
+        font-family: georgia;
+        margin: 0;
+        padding: 0;
+      }
+      .navbar-nav {
+      }
+      footer {
+        padding: 1rem;
+      }
+      .circle {
+        width: 40px;
+        height: 40px;
+        display: inline-block;
+        border-radius: 50%;
+        margin: 1rem;
+        background-color: brown;
+      }
+    </style>
+
+    <header>
+      <nav>
+        <nav class="navbar">
+          <h1>BRIDGE</h1>
+          <!--kelas navbar-->
+          <div class="navbar-nav">
+            <a href="berandaa.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="reservasi.html">Reservasi</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="register.html" id="user"><i data-feather="user"></i></a>
+          </div>
+        </nav>
+      </nav>
+      <hr />
+    </header>
+    <body>
+      <h1>REGISTER</h1>
+      <p>Create Your New Account</p>
+
+      <input type="text" class="input-box" placeholder="Enter Full Name" />
+      <br /><br />
+
+      <input type="email" name="email" placeholder="Enter Email" />
+      <br /><br />
+      <input
+        type="password"
+        name="password"
+        placeholder="Enter Password"
+      /><br /><br />
+      <button type="submit">LOGIN</button>
+      <a href="forgot.html">Forgot Password?</a>
+      <p>Or continue with</p>
+      <footer>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <p>already have an account? <a href="login.html">Sign in</a></p>
+      </footer>
+      <script>
+        feather.replace();
+      </script>
+    </body>
+  </head>
+</html>
