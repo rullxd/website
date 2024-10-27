@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Side Navigation Bar -->
+    <div class="sidebar">
+    <div style="margin-left: 20px"></div>
+        <a href="#home">Home</a>
+        <a href="#reservasi">Reservasi</a>
+        <a href="#staff">Staff</a>
+        <a href="#menu">Menu</a>
+        <a href="#customers">Customers</a>
+        <a href="#setelan">Setelan</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header>
+            <h1 style="margin-bottom: 30px">DASHBOARD</h1>
+            <!-- Dashboard Menu -->
+            <div class="dashboard"></div>
+        </header>
+
+        <!-- Home Section -->
+        <section id="home">
+            <p style="margin-bottom: 70px">This is a sample admin dashboard.</p>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="reservasi">
+            <h2>Reservasi</h2>
+            <p>Latest Reservation:</p>
+            <ul>
+                <li>Post 1: Total Reservasi</li>
+                <li>Post 2: Reservasi Per Hari</li>
+                <li>Post 3: Most Popular Menu</li>
+            </ul>
+        </section>
+
+        <!-- Progress Section with Progress Bar -->
+        <section id="progress">
+            <h2 style="margin-top: 70px">Progress</h2>
+            <label for="progress">Project Completion:</label>
+            <progress id="progress-bar" value="50" max="100">50%</progress>
+        </section>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
