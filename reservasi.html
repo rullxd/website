@@ -102,12 +102,26 @@
         }
 
         .reservation-card {
+            display: flex;
+            align-items: center;
             background-color: #fff;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-align: left;
+        }
+
+        .reservation-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            margin-right: 20px;
+            object-fit: cover;
+        }
+
+        .reservation-content {
+            flex: 1;
         }
 
         .reservation-title {
@@ -138,11 +152,16 @@
             text-decoration: none;
             transition: background-color 0.3s;
             cursor: pointer;
+            border: none;
+            /* Menghilangkan border */
+            outline: none;
+            /* Menghilangkan outline hitam */
         }
 
         .reserve-btn:hover {
             background-color: #c0392b;
         }
+
 
         /* Modal */
         .modal {
@@ -153,19 +172,28 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
         }
 
         .modal-content {
             background-color: #fff;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 8px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
             width: 90%;
             max-width: 500px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
             position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.3s ease;
+            max-height: 90vh;
+            /* Membatasi tinggi modal agar tidak terlalu besar */
+            overflow-y: auto;
+            /* Menambahkan scroll jika konten terlalu tinggi */
         }
+
 
         .close-btn {
             position: absolute;
@@ -173,7 +201,44 @@
             right: 15px;
             font-size: 1.5rem;
             cursor: pointer;
+            color: #e74c3c;
+        }
+
+        .modal-content h3 {
+            font-size: 1.8rem;
             color: #333;
+            margin-bottom: 20px;
+        }
+
+        .modal-content form label {
+            display: block;
+            font-weight: bold;
+            margin: 10px 0 5px;
+            color: #666;
+        }
+
+        .modal-content form input,
+        .modal-content form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal-content form button[type="submit"] {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .modal-content form button[type="submit"]:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
@@ -194,6 +259,11 @@
                 <div class="user-icon">
                     <i class="fas fa-user"></i>
                 </div>
+                <script>
+                    document.querySelector('.user-icon').addEventListener('click', function () {
+                        window.location.href = 'login.html';
+                    });
+                </script>
             </div>
         </div>
     </nav>
@@ -202,35 +272,54 @@
         <div class="header">Paket Reservasi</div>
 
         <div class="reservation-card">
-            <div class="reservation-title">Paket Makan Siang Romantis</div>
-            <div class="reservation-description">Nikmati momen spesial dengan pasangan dalam suasana romantis. Paket
-                ini mencakup hidangan lengkap mulai dari pembuka hingga penutup.</div>
-            <div class="price">Rp 500.000</div>
-            <button class="reserve-btn">Reservasi Sekarang</button>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAOw5tyhvX90EVj8Cxj-MPXsPPARN3Pd_Aw&s"
+                alt="Gambar Paket 1" class="reservation-image">
+            <div class="reservation-content">
+                <div class="reservation-title">Paket Makan Siang Romantis</div>
+                <div class="reservation-description">Nikmati momen spesial dengan pasangan dalam suasana romantis. Paket
+                    ini mencakup hidangan lengkap mulai dari pembuka hingga penutup.</div>
+                <div class="price">Rp 500.000</div>
+                <button class="reserve-btn">Reservasi Sekarang</button>
+            </div>
         </div>
 
         <div class="reservation-card">
-            <div class="reservation-title">Paket Keluarga</div>
-            <div class="reservation-description">Cocok untuk makan bersama keluarga besar, termasuk menu spesial untuk
-                anak-anak dan orang tua.</div>
-            <div class="price">Rp 1.200.000</div>
-            <button class="reserve-btn">Reservasi Sekarang</button>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAOw5tyhvX90EVj8Cxj-MPXsPPARN3Pd_Aw&s"
+                alt="Gambar Paket 2" class="reservation-image">
+            <div class="reservation-content">
+                <div class="reservation-title">Paket Keluarga</div>
+                <div class="reservation-description">Cocok untuk makan bersama keluarga besar, termasuk menu spesial
+                    untuk
+                    anak-anak dan orang tua.</div>
+                <div class="price">Rp 1.200.000</div>
+                <button class="reserve-btn">Reservasi Sekarang</button>
+            </div>
         </div>
 
         <div class="reservation-card">
-            <div class="reservation-title">Paket Perayaan Ulang Tahun</div>
-            <div class="reservation-description">Rayakan ulang tahun dengan dekorasi dan kue spesial dari kami. Paket
-                ini termasuk hidangan lengkap untuk 10 orang.</div>
-            <div class="price">Rp 1.800.000</div>
-            <button class="reserve-btn">Reservasi Sekarang</button>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAOw5tyhvX90EVj8Cxj-MPXsPPARN3Pd_Aw&s"
+                alt="Gambar Paket 3" class="reservation-image">
+            <div class="reservation-content">
+                <div class="reservation-title">Paket Perayaan Ulang Tahun</div>
+                <div class="reservation-description">Rayakan ulang tahun dengan dekorasi dan kue spesial dari kami.
+                    Paket
+                    ini termasuk hidangan lengkap untuk 10 orang.</div>
+                <div class="price">Rp 1.800.000</div>
+                <button class="reserve-btn">Reservasi Sekarang</button>
+            </div>
         </div>
 
         <div class="reservation-card">
-            <div class="reservation-title">Paket Meeting Bisnis</div>
-            <div class="reservation-description">Paket eksklusif untuk pertemuan bisnis, termasuk akses ke ruang rapat
-                dan layanan makanan ringan.</div>
-            <div class="price">Rp 700.000</div>
-            <button class="reserve-btn">Reservasi Sekarang</button>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAOw5tyhvX90EVj8Cxj-MPXsPPARN3Pd_Aw&s"
+                alt="Gambar Paket 4" class="reservation-image">
+            <div class="reservation-content">
+                <div class="reservation-title">Paket Meeting Bisnis</div>
+                <div class="reservation-description">Paket eksklusif untuk pertemuan bisnis, termasuk akses ke ruang
+                    rapat
+                    dan layanan makanan ringan.</div>
+                <div class="price">Rp 700.000</div>
+                <button class="reserve-btn">Reservasi Sekarang</button>
+            </div>
         </div>
     </div>
 
@@ -238,16 +327,16 @@
     <div id="reservationModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
-            <h3>Formulir Reservasi Khusus</h3>
+            <h3>Formulir Reservasi</h3>
             <form action="/reservasi" method="post">
                 <label for="name">Nama Lengkap:</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" placeholder="Nama Anda" required>
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" placeholder="email@contoh.com" required>
 
                 <label for="phone">Nomor Telepon:</label>
-                <input type="tel" id="phone" name="phone" required>
+                <input type="tel" id="phone" name="phone" placeholder="08xxxxxxx" required>
 
                 <label for="date">Tanggal Reservasi:</label>
                 <input type="date" id="date" name="date" required>
@@ -260,13 +349,14 @@
                     <option value="sarapan">Paket Sarapan Keluarga</option>
                     <option value="romantis">Paket Malam Romantis</option>
                     <option value="gathering">Paket Gathering Perusahaan</option>
-                    <!-- Tambahkan opsi lainnya sesuai kebutuhan -->
                 </select>
 
-                <button type="submit" class="reserve-btn">Kirim Reservasi</button>
+                <button type="submit" class="reserve-btn" style="width: 100%; margin-top: 15px;">Kirim
+                    Reservasi</button>
             </form>
         </div>
     </div>
+
     <script>
         // Ambil elemen modal dan tombol close
         var modal = document.getElementById("reservationModal");
@@ -291,7 +381,6 @@
             }
         }
     </script>
-
 
 </body>
 
