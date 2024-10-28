@@ -1,27 +1,212 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
-    <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
-    <title>RESERVASI</title>
-  </head>
-  <body>
-    <section class="hero" id="login">
-      <main class="content">
-        <h1>WELCOME BACK</h1>
-        <p>Login to your account</p>
-        <label for="email">Enter email/Nama Pengguna</label><br />
-        <input type="email" id="email" name="email" /> <br />
-        <br />
-        <label for="password">Password</label><br />
-        <input type="password" id="password" name="password" /> <br /><br />
+<html lang="id">
 
-        <a href="password.html">Forgot Password?</a><br /><br />
-        <button type="submit">LOGIN</button> <br />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Styling dasar */
+    * {
+      box-sizing: border-box;
+    }
 
-        <p>Don't have account? <a href="register.html">Sign Up</a></p>
-      </main>
-    </section>
-  </body>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .login-container h1 {
+      font-size: 1.5rem;
+      color: #333;
+      margin: 0;
+    }
+
+    .input-group {
+      position: relative;
+      display: flex;
+      margin-bottom: 1rem;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px 10px 10px 15px;
+      padding-right: 40px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .input-group input::placeholder {
+      color: #aaa;
+    }
+
+    .input-group .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #666;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .login-container button:hover {
+      background-color: #c0392b;
+    }
+
+    .alt-login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .icon-container i {
+      font-size: 24px;
+      cursor: pointer;
+      transition: color 0.3s;
+      color: #666;
+    }
+
+    .icon-container i:hover {
+      color: #e74c3c;
+    }
+
+    .register-link {
+      margin-top: 20px;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    .register-link a {
+      color: #e74c3c;
+      text-decoration: none;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-container">
+    <h1>Login</h1>
+    <form id="loginForm" onsubmit="return false;">
+      <div class="input-group">
+        <input type="text" id="username" placeholder="Username" required>
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Password" required>
+        <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+      </div>
+      <button type="button" onclick="login()">Login</button>
+    </form>
+
+    <div class="alt-login">
+      <p>Atau login dengan:</p>
+      <div class="icon-container">
+        <i class="fab fa-google" onclick="loginWithGoogle()" title="Login dengan Google"></i>
+        <i class="fab fa-facebook" onclick="loginWithFacebook()" title="Login dengan Facebook"></i>
+        <i class="fab fa-apple" onclick="loginWithApple()" title="Login dengan Apple"></i>
+      </div>
+    </div>
+
+    <div class="register-link">
+      Belum punya akun? <a href="register.html">Daftar di sini</a>
+    </div>
+  </div>
+
+  <script>
+    // Data pengguna
+    const users = {
+      admin: 'admin123',
+      customer: 'customer123'
+    };
+
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      // Cek login
+      if (users[username] && users[username] === password) {
+        if (username === 'admin') {
+          alert('Selamat datang, Admin!');
+          // Redirect ke halaman admin (bisa diubah sesuai kebutuhan)
+          window.location.href = 'admin.html'; // Ganti dengan URL halaman admin
+        } else if (username === 'customer') {
+
+          // Redirect ke halaman customer (bisa diubah sesuai kebutuhan)
+          window.location.href = 'home.html'; // Ganti dengan URL halaman customer
+        }
+      } else {
+        // Tampilkan pesan kesalahan
+        document.getElementById("error-message").style.display = "block";
+      }
+    }
+
+    // Fitur Toggle Password
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function () {
+      const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordField.setAttribute('type', type);
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    function loginWithGoogle() {
+      alert('Login dengan Google belum dikonfigurasi.');
+    }
+
+    function loginWithFacebook() {
+      alert('Login dengan Facebook belum dikonfigurasi.');
+    }
+
+    function loginWithApple() {
+      alert('Login dengan Apple belum dikonfigurasi.');
+    }
+  </script>
+
+</body>
+
 </html>

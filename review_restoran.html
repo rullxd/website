@@ -1,339 +1,90 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservasi Restoran</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Login Page</title>
     <style>
-        /* Styling dasar */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: #333;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
             background-color: #f4f4f4;
         }
 
-        /* Navbar */
-        .navbar {
+        .login-container {
+            width: 300px;
+            padding: 20px;
             background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 1rem 5%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #e74c3c;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #e74c3c;
-        }
-
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-left: auto;
-        }
-
-        .user-icon {
-            width: 35px;
-            height: 35px;
-            background-color: #f0f0f0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .user-icon i {
-            color: #666;
-        }
-
-        /* Konten Reservasi */
-        .reservation-container {
-            max-width: 900px;
-            margin: 100px auto 0;
-            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
             text-align: center;
         }
 
-        .header {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #e74c3c;
-            margin-bottom: 20px;
-        }
-
-        .reservation-card {
-            background-color: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: left;
-        }
-
-        .reservation-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .reservation-description {
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 10px;
-        }
-
-        .price {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #e74c3c;
-            margin-bottom: 15px;
-        }
-
-        .reserve-btn {
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s;
-            cursor: pointer;
-        }
-
-        .reserve-btn:hover {
-            background-color: #c0392b;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-        }
-
-        .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: left;
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: all 0.3s ease;
-            max-height: 90vh;
-            /* Membatasi tinggi modal agar tidak terlalu besar */
-            overflow-y: auto;
-            /* Menambahkan scroll jika konten terlalu tinggi */
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #e74c3c;
-        }
-
-        .modal-content h3 {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .modal-content form label {
-            display: block;
-            font-weight: bold;
-            margin: 10px 0 5px;
-            color: #666;
-        }
-
-        .modal-content form input,
-        .modal-content form select {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
-        .modal-content form button[type="submit"] {
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 12px;
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
             border: none;
-            border-radius: 5px;
-            font-size: 1rem;
+            color: #fff;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        .modal-content form button[type="submit"]:hover {
-            background-color: #c0392b;
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 
 <body>
 
-    <nav class="navbar">
-        <div class="navbar-content">
-            <div class="logo">LOGO</div>
-            <div class="nav-links">
-                <a href="home.html">Home</a>
-                <a href="#">Menu</a>
-                <a href="reservasi.html">Reservasi</a>
-                <a href="#">Galeri</a>
-                <a href="review_makanan.html">Review</a>
-            </div>
-            <div class="user-section">
-                <div class="user-icon">
-                    <i class="fas fa-user"></i>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="reservation-container">
-        <div class="header">Paket Reservasi</div>
-
-        <div class="reservation-card">
-            <div class="reservation-title">Paket Makan Siang Romantis</div>
-            <div class="reservation-description">Nikmati momen spesial dengan pasangan dalam suasana romantis. Paket
-                ini mencakup hidangan lengkap mulai dari pembuka hingga penutup.</div>
-            <div class="price">Rp 500.000</div>
-            <button class="reserve-btn">Reservasi Sekarang</button>
-        </div>
-
-        <div class="reservation-card">
-            <div class="reservation-title">Paket Keluarga</div>
-            <div class="reservation-description">Cocok untuk makan bersama keluarga besar, termasuk menu spesial untuk
-                anak-anak dan orang tua.</div>
-            <div class="price">Rp 1.200.000</div>
-            <button class="reserve-btn">Reservasi Sekarang</button>
-        </div>
-
-        <div class="reservation-card">
-            <div class="reservation-title">Paket Perayaan Ulang Tahun</div>
-            <div class="reservation-description">Rayakan ulang tahun dengan dekorasi dan kue spesial dari kami. Paket
-                ini termasuk hidangan lengkap untuk 10 orang.</div>
-            <div class="price">Rp 1.800.000</div>
-            <button class="reserve-btn">Reservasi Sekarang</button>
-        </div>
-
-        <div class="reservation-card">
-            <div class="reservation-title">Paket Meeting Bisnis</div>
-            <div class="reservation-description">Paket eksklusif untuk pertemuan bisnis, termasuk akses ke ruang rapat
-                dan layanan makanan ringan.</div>
-            <div class="price">Rp 700.000</div>
-            <button class="reserve-btn">Reservasi Sekarang</button>
-        </div>
-    </div>
-
-    <!-- Modal Popup untuk Reservasi -->
-    <div id="reservationModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h3>Formulir Reservasi</h3>
-            <form action="/reservasi" method="post">
-                <label for="name">Nama Lengkap:</label>
-                <input type="text" id="name" name="name" placeholder="Nama Anda" required>
-
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="email@contoh.com" required>
-
-                <label for="phone">Nomor Telepon:</label>
-                <input type="tel" id="phone" name="phone" placeholder="08xxxxxxx" required>
-
-                <label for="date">Tanggal Reservasi:</label>
-                <input type="date" id="date" name="date" required>
-
-                <label for="time">Jam Reservasi:</label>
-                <input type="time" id="time" name="time" required>
-
-                <label for="package">Pilih Paket:</label>
-                <select id="package" name="package">
-                    <option value="sarapan">Paket Sarapan Keluarga</option>
-                    <option value="romantis">Paket Malam Romantis</option>
-                    <option value="gathering">Paket Gathering Perusahaan</option>
-                </select>
-
-                <button type="submit" class="reserve-btn" style="width: 100%; margin-top: 15px;">Kirim
-                    Reservasi</button>
-            </form>
-        </div>
+    <div class="login-container">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button onclick="login()">Login</button>
+        <p id="error-message" style="color: red; display: none;">Username atau password salah!</p>
     </div>
 
     <script>
-        // Ambil elemen modal dan tombol close
-        var modal = document.getElementById("reservationModal");
-        var closeBtn = document.getElementsByClassName("close-btn")[0];
+        // Data pengguna
+        const users = {
+            admin: 'admin123',
+            customer: 'customer123'
+        };
 
-        // Fungsi untuk membuka modal
-        document.querySelectorAll('.reserve-btn').forEach(button => {
-            button.onclick = function () {
-                modal.style.display = "block";
-            }
-        });
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
 
-        // Fungsi untuk menutup modal saat tombol close diklik
-        closeBtn.onclick = function () {
-            modal.style.display = "none";
-        }
-
-        // Tutup modal jika pengguna mengklik area di luar modal
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
+            // Cek login
+            if (users[username] && users[username] === password) {
+                if (username === 'admin') {
+                    alert('Selamat datang, Admin!');
+                    // Redirect ke halaman admin (bisa diubah sesuai kebutuhan)
+                    window.location.href = 'admin.html'; // Ganti dengan URL halaman admin
+                } else if (username === 'customer') {
+                    alert('Selamat datang, Customer!');
+                    // Redirect ke halaman customer (bisa diubah sesuai kebutuhan)
+                    window.location.href = 'customer.html'; // Ganti dengan URL halaman customer
+                }
+            } else {
+                // Tampilkan pesan kesalahan
+                document.getElementById("error-message").style.display = "block";
             }
         }
     </script>
