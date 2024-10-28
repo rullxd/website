@@ -1,0 +1,135 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    font-family: Poppins;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+main {
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.sidebar {
+    width: 100px;
+    background-color: #333;
+    padding-top: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+.sidebar a {
+    padding: 15px;
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+.sidebar a:hover {
+    background-color: #555;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 15%;
+}
+
+/* Left Section with Two-part Boxes */
+.box-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 3;
+    float: left;
+    margin-right: 100%;
+    margin-left: -190%;
+    margin-top: 80px;
+    margin-bottom: -13%;
+    position: relative;
+}
+
+/* Styling for two-part box */
+.two-part-box {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    float: left;
+}
+
+/* Image part of the two-part box */
+.box-image img {
+    width: 100%;
+    height: auto;
+}
+
+/* Text part of the two-part box */
+.box-text {
+    padding: 10px;
+    text-align: center;
+    background-color: #007bff;
+    color: #fff;
+}
+
+.name-input {
+    margin-top: 5px;
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10%;
+    margin-top: -5%;
+}
+
+/* Right Sidebar with Smaller Boxes */
+.sidebar2 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    float: right;
+    margin-top: 80px;
+    margin-bottom: 30px;
+    margin-right: 15%;
+}
+
+/* Styling for small boxes in the sidebar */
+.small-box {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.small-box img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.small-box p {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+}
