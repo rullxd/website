@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri Restoran</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Basic styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #e74c3c;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ddd;
+            flex-shrink: 0;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .user-icon {
+            width: 35px;
+            height: 35px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-icon i {
+            color: #666;
+        }
+
+        .menu-price {
+            font-size: 1.2rem;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Galeri Section */
+        .gallery-section {
+            padding: 120px 5%;
+            text-align: center;
+        }
+
+        .gallery-header {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .category-header {
+            font-size: 2rem;
+            color: #e74c3c;
+            margin-top: 50px;
+            text-align: left;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">LOGO</div>
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="menu.html">Menu</a>
+                <a href="reservasi.html">Reservasi</a>
+                <a href="galeri.html">Galeri</a>
+                <a href="review_makanan.html">Review</a>
+            </div>
+            <div class="user-section">
+
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <script>
+                    document.querySelector('.user-icon').addEventListener('click', function () {
+                        window.location.href = 'login.html';
+                    });
+                </script>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Galeri Section -->
+    <section class="gallery-section">
+        <h1 class="gallery-header">Galeri Restoran Kami</h1>
+
+        <!-- Kategori: Interior dan Eksterior -->
+        <h2 class="category-header">Interior dan Eksterior</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://arsitagx-master-article.s3-ap-southeast-1.amazonaws.com/article-photo/180/Artikel-Resto-Kayu-Foto-Utama.jpg"
+                    alt="Foto Interior Restoran">
+            </div>
+            <div class="gallery-item">
+                <img src="https://www.ledyilighting.com/wp-content/uploads/2024/07/Highlight-Your-Restaurant-Facades-with-LED-Strips.jpg"
+                    alt="Foto Eksterior Restoran">
+            </div>
+        </div>
+
+        <!-- Kategori: Hidangan Spesial -->
+        <h2 class="category-header">Hidangan Spesial</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1485403635/b9z3psdzjkthgx1mcosh.jpg"
+                    alt="Hidangan Spesial 1">
+            </div>
+            <div class="gallery-item">
+                <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/e1/a9/4f/waroeng-ss-spesial-sambal.jpg?w=600&h=-1&s=1"
+                    alt="Hidangan Spesial 2">
+            </div>
+        </div>
+
+        <!-- Kategori: Aktivitas di Restoran -->
+        <h2 class="category-header">Aktivitas di Restoran</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://cdn.antaranews.com/cache/1200x800/2023/11/22/IMG_20231122_144828.jpg"
+                    alt="Aktivitas di Restoran">
+            </div>
+            <div class="gallery-item">
+                <img src="https://media-cdn.tripadvisor.com/media/photo-s/11/75/85/6e/suasana-restoran-saat.jpg"
+                    alt="Suasana di Restoran">
+            </div>
+        </div>
+
+        <!-- Kategori: Acara Khusus -->
+        <h2 class="category-header">Acara Khusus</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://example.com/party1.jpg" alt="Acara Ulang Tahun">
+            </div>
+            <div class="gallery-item">
+                <img src="https://example.com/meeting.jpg" alt="Acara Pertemuan Bisnis">
+            </div>
+        </div>
+
+        <!-- Kategori: Tim Koki dan Staf -->
+        <h2 class="category-header">Tim Koki dan Staf</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://example.com/chef1.jpg" alt="Koki Utama">
+            </div>
+            <div class="gallery-item">
+                <img src="https://example.com/staff.jpg" alt="Tim Staf">
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

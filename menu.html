@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Restoran</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Basic styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #e74c3c;
+        }
+
+        .menu-section {
+            padding: 120px 5%;
+        }
+
+        .menu-header {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .category-header {
+            font-size: 2rem;
+            color: #e74c3c;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .menu-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: transform 0.3s;
+        }
+
+        .menu-card:hover {
+            transform: scale(1.05);
+        }
+
+        .menu-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .menu-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .menu-description {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ddd;
+            flex-shrink: 0;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .user-icon {
+            width: 35px;
+            height: 35px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-icon i {
+            color: #666;
+        }
+
+        .menu-price {
+            font-size: 1.2rem;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .order-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .order-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">LOGO</div>
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="menu.html">Menu</a>
+                <a href="reservasi.html">Reservasi</a>
+                <a href="galeri.html">Galeri</a>
+                <a href="review_makanan.html">Review</a>
+            </div>
+            <div class="user-section">
+
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <script>
+                    document.querySelector('.user-icon').addEventListener('click', function () {
+                        window.location.href = 'login.html';
+                    });
+                </script>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Section -->
+    <section class="menu-section">
+        <h1 class="menu-header">Menu Kami</h1>
+
+        <!-- Kategori Makanan Pembuka -->
+        <h2 class="category-header">Makanan Pembuka</h2>
+        <div class="menu-grid">
+            <div class="menu-card">
+                <img src="https://www.lifeasastrawberry.com/wp-content/uploads/2012/11/warm-bruschetta-1.jpg"
+                    alt="Bruschetta" class="menu-image">
+                <div class="menu-title">Bruschetta</div>
+                <p class="menu-description">Roti panggang dengan tomat segar, bawang putih, dan basil.</p>
+                <div class="menu-price">Rp 35.000</div>
+                <a href="#" class="order-btn">Pesan Sekarang</a>
+            </div>
+            <div class="menu-card">
+                <img src="https://awsimages.detik.net.id/community/media/visual/2020/12/22/chicken-caesar-salad_43.jpeg?w=600&q=90"
+                    alt="Salad Caesar" class="menu-image">
+                <div class="menu-title">Salad Caesar</div>
+                <p class="menu-description">Salad segar dengan saus caesar dan potongan ayam panggang.</p>
+                <div class="menu-price">Rp 40.000</div>
+                <a href="#" class="order-btn">Pesan Sekarang</a>
+            </div>
+        </div>
+
+        <!-- Kategori Makanan Utama -->
+        <h2 class="category-header">Makanan Utama</h2>
+        <div class="menu-grid">
+            <div class="menu-card">
+                <img src="https://aslimasako.com/storage/post/new-title-31102023-032152.jpg" alt="Nasi Goreng Spesial"
+                    class="menu-image">
+                <div class="menu-title">Nasi Goreng Spesial</div>
+                <p class="menu-description">Nasi goreng khas dengan bumbu spesial, disajikan dengan telur mata sapi.</p>
+                <div class="menu-price">Rp 50.000</div>
+                <a href="#" class="order-btn">Pesan Sekarang</a>
+            </div>
+            <div class="menu-card">
+                <img src="https://awsimages.detik.net.id/community/media/visual/2022/08/08/resep-sate-ayam-bumbu-ketumbar.jpeg?w=600&q=90"
+                    alt="Sate Ayam" class="menu-image">
+                <div class="menu-title">Sate Ayam</div>
+                <p class="menu-description">Sate ayam yang lezat dengan saus kacang yang kaya rasa.</p>
+                <div class="menu-price">Rp 45.000</div>
+                <a href="#" class="order-btn">Pesan Sekarang</a>
+            </div>
+        </div>
+
+        <!-- Kategori Hidangan Penutup -->
+        <h2 class="category-header">Hidangan Penutup</h2>
+        <div class="menu-grid">
+            <div class="menu-card">
+                <img src="https://cdn1-production-images-kly.akamaized.net/LfbUTAuxHpwQC0-kqGvDWvPjUkk=/0x565:667x941/1200x675/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/4391204/original/034304200_1681225630-shutterstock_506925085.jpg"
+                    alt="Cheesecake" class="menu-image">
+                <div class="menu-title">Cheesecake</div>
+                <p class="menu-description">Cheesecake lembut dengan topping stroberi segar.</p>
+                <div class="menu-price">Rp 35.000</div>
+                <a href="#" class="order-btn">Pesan Sekarang</a>
+            </div>
+            <div class="menu-card">
+                <img src="https://asset.kompas.com/crops/Ma3j_BzCVcAU_ITWnCdAcO_T1Qg=/0x0:998x665/750x500/data/photo/2020/06/11/5ee24345ec640.jpg"
+                    alt="Es Krim Cokelat" class="menu-image">
+                <div class="menu-title">Es Krim Cokelat</div>
+                <p class="menu-description">Es krim cokelat yang lembut dan kaya rasa.</p>
+                <div class="menu-price">Rp 20.000</div>
+                <a href="#" class="order-btn">Pesan Sekarang</a>
+            </div>
+        </div>
+
+        <!-- Kategori Minuman -->
+        <h2 class="category-header">Minuman</h2>
+        <div class="menu-grid">
+            <div class="menu-card">
+                <img src="https://awsimages.detik.net.id/community/media/visual/2020/05/14/0af32d8b-36b7-4555-8e79-4fd54c98f795.jpeg?w=600&q=90g"
+                    alt="Es Teh Manis" class="menu-image">
+                <div class="menu-title">Es Teh Manis</div>
+                <p class="menu-description">Minuman menyegarkan untuk setiap hidangan.</p>
+                <div class="menu-price">Rp 10.000</div>
+                <a href="#" class="order-btn">Pesan Sekarang</a>
+            </div>
+            <div class="menu-card">
+                <img src="https://i0.wp.com/mu4.co.id/wp-content/uploads/2024/04/kopi-hitam.webp?fit=650%2C400&ssl=1"
+                    alt="Kopi Hitam" class="menu-image">
+                <div class="menu-title">Kopi Hitam</div>
+                <p class="menu-description">Kopi hitam pekat untuk pecinta kopi sejati.</p>
+                <div class="menu-price">Rp 15.000</div>
+                <a href="#" class="order-btn">Pesan Sekarang</a>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
