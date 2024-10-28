@@ -1,0 +1,64 @@
+<html>
+
+<head>
+    <title>Web Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #d3d3d3;
+            padding: 10px 20px;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .navbar .nav-links a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: black;
+            font-size: 18px;
+        }
+
+        .navbar .user-icon {
+            font-size: 24px;
+        }
+
+        .content {
+            background-color: white;
+            height: calc(100vh - 50px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="logo">LOGO</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Menu</a>
+            <a href="#">Reservasi</a>
+            <a href="#">Galeri</a>
+        </div>
+        <i class="fas fa-user user-icon"></i>
+    </div>
+    <div class="content"></div>
+</body>
+
+</html>
