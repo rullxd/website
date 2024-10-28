@@ -34,7 +34,6 @@
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            justify-content: space-between;
             align-items: center;
         }
 
@@ -48,6 +47,8 @@
             display: flex;
             gap: 2rem;
             align-items: center;
+            justify-content: center;
+            flex-grow: 1;
         }
 
         .nav-links a {
@@ -65,7 +66,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-left: 2rem;
+            margin-left: auto;
         }
 
         .user-icon {
@@ -220,13 +221,14 @@
                 <a href="#">Menu</a>
                 <a href="#">Reservasi</a>
                 <a href="#">Galeri</a>
-                <div class="user-section">
-                    <div class="user-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
+            </div>
+            <div class="user-section">
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
                 </div>
             </div>
         </div>
+
     </nav>
 
     <section class="content-section">
