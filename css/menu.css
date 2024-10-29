@@ -1,0 +1,301 @@
+/* Basic styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem 5%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #e74c3c;
+}
+
+.menu-section {
+    padding: 120px 5%;
+}
+
+.menu-header {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.category-header {
+    font-size: 2rem;
+    color: #e74c3c;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.menu-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    transition: transform 0.3s;
+}
+
+.menu-card:hover {
+    transform: scale(1.05);
+}
+
+.menu-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.menu-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.menu-description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ddd;
+    flex-shrink: 0;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.user-icon {
+    width: 35px;
+    height: 35px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.user-icon i {
+    color: #666;
+}
+
+.menu-price {
+    font-size: 1.2rem;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.order-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.order-btn:hover {
+    background-color: #c0392b;
+}
+
+
+/* Ikon Keranjang di Sudut Kiri Bawah */
+.cart-icon {
+    display: none;
+    /* Ikon keranjang disembunyikan awalnya */
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+#cart-count {
+    background-color: #fff;
+    color: #e74c3c;
+    font-size: 0.8rem;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+
+/* Styling untuk popup keranjang */
+.cart-popup {
+    display: none;
+    position: fixed;
+    top: 20%;
+    /* Memberikan jarak 20% dari atas layar */
+    left: 50%;
+    transform: translate(-50%, 0);
+    /* Hanya menggeser secara horizontal */
+    width: 350px;
+    /* Lebar yang sesuai */
+    max-height: 60vh;
+    /* Batas tinggi agar tidak terlalu panjang, 60% dari tinggi layar */
+    overflow-y: auto;
+    /* Menambah scroll jika konten terlalu panjang */
+    background-color: rgba(255, 255, 255, 0.95);
+    /* Transparansi pada latar belakang */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    /* Bayangan untuk menonjolkan */
+    padding: 20px;
+    z-index: 1001;
+}
+
+
+.cart-popup h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#cart-items {
+    list-style-type: none;
+    padding: 0;
+}
+
+#cart-items li {
+    margin: 10px 0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#cart-popup button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#cart-popup button:hover {
+    background-color: #c0392b;
+}
+
+.icon-button {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.8rem;
+    color: #e74c3c;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#cart-items li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+
+
+
+
+/* Animasi Menu Masuk ke Keranjang */
+@keyframes addToCartAnimation {
+    0% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(0.5) translateY(-20px);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(0) translateY(-50px);
+        opacity: 0;
+    }
+}
+
+.menu-item-animate {
+    animation: addToCartAnimation 0.6s ease-in-out forwards;
+}
