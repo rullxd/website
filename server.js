@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors'); // Middleware untuk mengatasi CORS
 const mysql = require('mysql'); // Paket untuk koneksi MySQL
+const bcrypt = require('bcrypt'); // Paket untuk hashing password
 
 // Inisialisasi aplikasi Express
 const app = express();
@@ -29,45 +30,63 @@ db.connect((err) => {
     }
 });
 
-// Endpoint untuk login
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-
-    // Query untuk mencari pengguna dengan username dan password yang diberikan
-    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    db.query(query, [username, password], (err, results) => {
-        if (err) {
-            console.error('Error querying database:', err);
-            res.status(500).json({ success: false, message: 'Internal server error' });
-        } else {
-            if (results.length > 0) {
-                // Jika pengguna ditemukan
-                const user = results[0];
-                res.json({ success: true, role: user.role });
-            } else {
-                // Jika pengguna tidak ditemukan
-                res.status(401).json({ success: false, message: 'Unauthorized' });
-            }
-        }
-    });
-});
 // Endpoint untuk registrasi
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
     const role = 'customer'; // Set default role sebagai customer
 
-    // Query untuk menambahkan pengguna baru ke database
-    const query = 'INSERT INTO users (username, password, role) VALUES (?, ?, ?)';
-    db.query(query, [username, password, role], (err, result) => {
+    // Hash password sebelum menyimpannya ke database
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
         if (err) {
-            console.error('Error inserting user:', err);
-            res.status(500).json({ success: false, message: 'Gagal membuat akun' });
-        } else {
-            res.json({ success: true, message: 'Akun berhasil dibuat' });
+            console.error('Error hashing password:', err);
+            res.status(500).json({ success: false, message: 'Error hashing password' });
+            return;
         }
+
+        // Query untuk menambahkan pengguna baru ke database
+        const query = 'INSERT INTO users (username, password, role) VALUES (?, ?, ?)';
+        db.query(query, [username, hashedPassword, role], (err, result) => {
+            if (err) {
+                console.error('Error inserting user:', err);
+                res.status(500).json({ success: false, message: 'Gagal membuat akun' });
+            } else {
+                res.json({ success: true, message: 'Akun berhasil dibuat' });
+            }
+        });
     });
 });
 
+// Endpoint untuk login
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Query untuk mencari pengguna dengan username yang diberikan
+    const query = 'SELECT * FROM users WHERE username = ?';
+    db.query(query, [username], (err, results) => {
+        if (err) {
+            console.error('Error querying database:', err);
+            res.status(500).json({ success: false, message: 'Internal server error' });
+            return;
+        }
+
+        if (results.length > 0) {
+            const user = results[0];
+            // Periksa password dengan bcrypt
+            bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) {
+                    console.error('Error comparing password:', err);
+                    res.status(500).json({ success: false, message: 'Internal server error' });
+                } else if (isMatch) {
+                    res.json({ success: true, role: user.role });
+                } else {
+                    res.status(401).json({ success: false, message: 'Unauthorized' });
+                }
+            });
+        } else {
+            res.status(401).json({ success: false, message: 'Unauthorized' });
+        }
+    });
+});
 
 // Menjalankan server di port 3000
 app.listen(3000, () => {
