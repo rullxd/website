@@ -23,19 +23,42 @@
                 <a href="review_makanan.html">Review</a>
             </div>
             <div class="user-section">
-
-                <div class="user-icon">
-                    <i class="fas fa-user"></i>
+                <!-- User Icon -->
+                <div class="user-icon" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
                 </div>
-                <script>
-                    document.querySelector('.user-icon').addEventListener('click', function () {
-                        window.location.href = 'login.html';
-                    });
-                </script>
-
             </div>
         </div>
     </nav>
+
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu Pengguna</h2>
+            <button class="close-btn" onclick="toggleSidebar()">×</button>
+        </div>
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li><a href="#">Profil Saya</a></li>
+                <li><a href="#">Riwayat Pesanan</a></li>
+                <li><a href="#">Reservasi Saya</a></li>
+                <li><a href="#">Pengaturan</a></li>
+                <li><a href="#">Bantuan</a></li>
+                <li>
+                    <a href="#" onclick="toggleTheme()">
+                        <i class="fas fa-moon"></i> Ganti Tema
+                    </a>
+                </li>
+            </ul>
+            <a href="login.html" class="sidebar-cta-button">Login</a>
+        </div>
+    </div>
 
     <!-- Galeri Section -->
     <section class="gallery-section">
@@ -103,6 +126,56 @@
             </div>
         </div>
     </section>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function (event) {
+            const sidebar = document.querySelector('.sidebar');
+            const userIcon = document.querySelector('.user-icon');
+
+            if (!sidebar.contains(event.target) && !userIcon.contains(event.target)) {
+                sidebar.classList.remove('active');
+                document.querySelector('.overlay').classList.remove('active');
+            }
+        });
+    </script>
+    <script>
+        // Fungsi untuk mengubah tema
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+            }
+
+            // Simpan preferensi tema ke localStorage
+            localStorage.setItem('theme', html.getAttribute('data-theme') || 'light');
+        }
+
+        // Fungsi untuk memuat tema yang tersimpan
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        }
+
+        // Panggil loadSavedTheme saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
+
+
 </body>
 
 </html>
