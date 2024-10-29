@@ -178,6 +178,8 @@
 
         /* Ikon Keranjang di Sudut Kiri Bawah */
         .cart-icon {
+            display: none;
+            /* Ikon keranjang disembunyikan awalnya */
             position: fixed;
             bottom: 20px;
             left: 20px;
@@ -207,6 +209,7 @@
             top: 5px;
             right: 5px;
         }
+
 
         /* Styling untuk popup keranjang */
         .cart-popup {
@@ -436,6 +439,15 @@
 
         // Fungsi untuk menambahkan item ke keranjang dengan animasi
         // Fungsi untuk menambahkan item ke keranjang dengan animasi
+        function updateCartIcon() {
+            const cartIcon = document.getElementById("cart-icon");
+            if (cartCount > 0) {
+                cartIcon.style.display = "flex";
+            } else {
+                cartIcon.style.display = "none";
+            }
+        }
+
         function addToCart(menuItem, harga, itemImageSrc, event) {
             const cartItems = document.getElementById("cart-items");
             const existingItem = Array.from(cartItems.children).find(
@@ -443,26 +455,23 @@
             );
 
             if (existingItem) {
-                // Jika item sudah ada di keranjang, tambahkan jumlahnya
                 const quantitySpan = existingItem.querySelector(".item-quantity");
                 let quantity = parseInt(quantitySpan.textContent, 10);
                 quantity++;
                 quantitySpan.textContent = quantity;
             } else {
-                // Jika item belum ada di keranjang, tambahkan item baru dengan jumlah 1
                 const listItem = document.createElement("li");
-                listItem.dataset.itemName = menuItem; // Data untuk identifikasi item
+                listItem.dataset.itemName = menuItem;
                 listItem.innerHTML = `
             ${menuItem} - ${harga} x <span class="item-quantity">1</span>
         `;
                 cartItems.appendChild(listItem);
             }
 
-            // Perbarui jumlah item di ikon keranjang
             cartCount++;
             document.getElementById("cart-count").textContent = cartCount;
+            updateCartIcon();
 
-            // Buat elemen gambar untuk animasi
             const itemImage = document.createElement("img");
             itemImage.src = itemImageSrc;
             itemImage.className = "menu-item-animate";
@@ -473,7 +482,6 @@
             itemImage.style.left = `${event.clientX}px`;
             document.body.appendChild(itemImage);
 
-            // Pindahkan gambar menuju ikon keranjang di kiri bawah
             const cartIcon = document.getElementById("cart-icon");
             setTimeout(() => {
                 itemImage.style.transition = "all 0.6s ease";
@@ -483,11 +491,37 @@
                 itemImage.style.opacity = "0";
             }, 100);
 
-            // Hapus gambar animasi setelah animasi selesai
             itemImage.addEventListener("transitionend", () => {
                 document.body.removeChild(itemImage);
             });
         }
+
+        function removeFromCart(menuItem) {
+            const cartItems = document.getElementById("cart-items");
+            const item = Array.from(cartItems.children).find(
+                child => child.dataset.itemName === menuItem
+            );
+
+            if (item) {
+                const quantitySpan = item.querySelector(".item-quantity");
+                let quantity = parseInt(quantitySpan.textContent, 10);
+                quantity--;
+
+                if (quantity > 0) {
+                    quantitySpan.textContent = quantity;
+                } else {
+                    cartItems.removeChild(item);
+                }
+
+                cartCount--;
+                document.getElementById("cart-count").textContent = cartCount;
+                updateCartIcon();
+            }
+        }
+
+        // Panggil updateCartIcon() di awal untuk memastikan ikon tidak muncul saat kosong
+        updateCartIcon();
+
 
 
         // Tambahkan event listener ke semua tombol "Pesan Sekarang"
