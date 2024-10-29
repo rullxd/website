@@ -250,7 +250,7 @@ body {
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: var(--heading-color);
+    background-color: #b8b8b8;
 }
 
 .modal-content form button[type="submit"] {
