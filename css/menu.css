@@ -93,12 +93,16 @@ body {
 
 .menu-section {
     padding: 120px 5%;
+    /* Tambahkan background gradient */
+    background: var(--background-gradient-1);
 }
+
+
 
 .menu-header {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #2c3e50;
+    color: var(--text-primary);
     text-align: center;
     margin-bottom: 30px;
 }
@@ -119,7 +123,7 @@ body {
 }
 
 .menu-card {
-    background-color: #fff;
+    background: var(--background-gradient-1);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
@@ -141,13 +145,13 @@ body {
 
 .menu-title {
     font-size: 1.5rem;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 10px;
 }
 
 .menu-description {
     font-size: 1rem;
-    color: #555;
+    color: var(--text-primary);
     margin-bottom: 10px;
 }
 
@@ -253,7 +257,7 @@ body {
     /* Batas tinggi agar tidak terlalu panjang, 60% dari tinggi layar */
     overflow-y: auto;
     /* Menambah scroll jika konten terlalu panjang */
-    background-color: rgba(255, 255, 255, 0.95);
+    background: var(--background-gradient-1);
     /* Transparansi pada latar belakang */
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
