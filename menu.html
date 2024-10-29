@@ -174,6 +174,120 @@
         .order-btn:hover {
             background-color: #c0392b;
         }
+
+
+        /* Ikon Keranjang di Sudut Kiri Bawah */
+        .cart-icon {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        #cart-count {
+            background-color: #fff;
+            color: #e74c3c;
+            font-size: 0.8rem;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        /* Styling untuk popup keranjang */
+        .cart-popup {
+            display: none;
+            position: fixed;
+            top: 20%;
+            /* Memberikan jarak 20% dari atas layar */
+            left: 50%;
+            transform: translate(-50%, 0);
+            /* Hanya menggeser secara horizontal */
+            width: 350px;
+            /* Lebar yang sesuai */
+            max-height: 60vh;
+            /* Batas tinggi agar tidak terlalu panjang, 60% dari tinggi layar */
+            overflow-y: auto;
+            /* Menambah scroll jika konten terlalu panjang */
+            background-color: rgba(255, 255, 255, 0.95);
+            /* Transparansi pada latar belakang */
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            /* Bayangan untuk menonjolkan */
+            padding: 20px;
+            z-index: 1001;
+        }
+
+
+        .cart-popup h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #cart-items {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #cart-items li {
+            margin: 10px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #cart-popup button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #cart-popup button:hover {
+            background-color: #c0392b;
+        }
+
+
+
+
+        /* Animasi Menu Masuk ke Keranjang */
+        @keyframes addToCartAnimation {
+            0% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(0.5) translateY(-20px);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(0) translateY(-50px);
+                opacity: 0;
+            }
+        }
+
+        .menu-item-animate {
+            animation: addToCartAnimation 0.6s ease-in-out forwards;
+        }
     </style>
 </head>
 
@@ -203,6 +317,13 @@
             </div>
         </div>
     </nav>
+
+    <!-- Ikon Keranjang -->
+    <div id="cart-icon" class="cart-icon" onclick="openCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-count">0</span>
+    </div>
+
 
     <!-- Menu Section -->
     <section class="menu-section">
@@ -292,6 +413,97 @@
             </div>
         </div>
     </section>
+
+    <!-- Popup Keranjang -->
+    <div id="cart-popup" class="cart-popup">
+        <h2>Keranjang Belanja</h2>
+        <ul id="cart-items">
+            <!-- Daftar item akan muncul di sini -->
+        </ul>
+        <button onclick="closeCart()">Tutup Keranjang</button>
+    </div>
+
+    <script>
+        let cartCount = 0;
+
+        function openCart() {
+            document.getElementById("cart-popup").style.display = "block";
+        }
+
+        function closeCart() {
+            document.getElementById("cart-popup").style.display = "none";
+        }
+
+        // Fungsi untuk menambahkan item ke keranjang dengan animasi
+        // Fungsi untuk menambahkan item ke keranjang dengan animasi
+        function addToCart(menuItem, harga, itemImageSrc, event) {
+            const cartItems = document.getElementById("cart-items");
+            const existingItem = Array.from(cartItems.children).find(
+                item => item.dataset.itemName === menuItem
+            );
+
+            if (existingItem) {
+                // Jika item sudah ada di keranjang, tambahkan jumlahnya
+                const quantitySpan = existingItem.querySelector(".item-quantity");
+                let quantity = parseInt(quantitySpan.textContent, 10);
+                quantity++;
+                quantitySpan.textContent = quantity;
+            } else {
+                // Jika item belum ada di keranjang, tambahkan item baru dengan jumlah 1
+                const listItem = document.createElement("li");
+                listItem.dataset.itemName = menuItem; // Data untuk identifikasi item
+                listItem.innerHTML = `
+            ${menuItem} - ${harga} x <span class="item-quantity">1</span>
+        `;
+                cartItems.appendChild(listItem);
+            }
+
+            // Perbarui jumlah item di ikon keranjang
+            cartCount++;
+            document.getElementById("cart-count").textContent = cartCount;
+
+            // Buat elemen gambar untuk animasi
+            const itemImage = document.createElement("img");
+            itemImage.src = itemImageSrc;
+            itemImage.className = "menu-item-animate";
+            itemImage.style.position = "fixed";
+            itemImage.style.width = "50px";
+            itemImage.style.height = "50px";
+            itemImage.style.top = `${event.clientY}px`;
+            itemImage.style.left = `${event.clientX}px`;
+            document.body.appendChild(itemImage);
+
+            // Pindahkan gambar menuju ikon keranjang di kiri bawah
+            const cartIcon = document.getElementById("cart-icon");
+            setTimeout(() => {
+                itemImage.style.transition = "all 0.6s ease";
+                itemImage.style.top = `${cartIcon.getBoundingClientRect().top}px`;
+                itemImage.style.left = `${cartIcon.getBoundingClientRect().left}px`;
+                itemImage.style.transform = "scale(0)";
+                itemImage.style.opacity = "0";
+            }, 100);
+
+            // Hapus gambar animasi setelah animasi selesai
+            itemImage.addEventListener("transitionend", () => {
+                document.body.removeChild(itemImage);
+            });
+        }
+
+
+        // Tambahkan event listener ke semua tombol "Pesan Sekarang"
+        document.querySelectorAll('.order-btn').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                const menuItem = this.parentNode.querySelector('.menu-title').textContent;
+                const harga = this.parentNode.querySelector('.menu-price').textContent;
+                const itemImageSrc = this.parentNode.querySelector('.menu-image').src;
+                addToCart(menuItem, harga, itemImageSrc, event);
+            });
+        });
+    </script>
+
+
+
 </body>
 
 </html>
