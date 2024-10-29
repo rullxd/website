@@ -267,6 +267,23 @@
             background-color: #c0392b;
         }
 
+        .icon-button {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 0.8rem;
+            color: #e74c3c;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #cart-items li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+
+
 
 
 
@@ -359,7 +376,7 @@
             <div class="menu-card">
                 <img src="https://aslimasako.com/storage/post/new-title-31102023-032152.jpg" alt="Nasi Goreng Spesial"
                     class="menu-image">
-                <div class="menu-title">Nasi Goreng Spesial</div>
+                <div class="menu-title">Nasi Goreng</div>
                 <p class="menu-description">Nasi goreng khas dengan bumbu spesial, disajikan dengan telur mata sapi.</p>
                 <div class="menu-price">Rp 50.000</div>
                 <a href="#" class="order-btn">Pesan Sekarang</a>
@@ -463,9 +480,41 @@
                 const listItem = document.createElement("li");
                 listItem.dataset.itemName = menuItem;
                 listItem.innerHTML = `
-            ${menuItem} - ${harga} x <span class="item-quantity">1</span>
+            ${menuItem} - ${harga} x 
+            <span class="item-quantity">1</span>
+            <span class="icon-button increase-btn">+</span>
+            <span class="icon-button decrease-btn">−</span>
         `;
+
                 cartItems.appendChild(listItem);
+
+                // Event listener untuk ikon +
+                listItem.querySelector(".increase-btn").addEventListener("click", () => {
+                    const quantitySpan = listItem.querySelector(".item-quantity");
+                    let quantity = parseInt(quantitySpan.textContent, 10);
+                    quantity++;
+                    quantitySpan.textContent = quantity;
+                    cartCount++;
+                    document.getElementById("cart-count").textContent = cartCount;
+                    updateCartIcon();
+                });
+
+                // Event listener untuk ikon -
+                listItem.querySelector(".decrease-btn").addEventListener("click", () => {
+                    const quantitySpan = listItem.querySelector(".item-quantity");
+                    let quantity = parseInt(quantitySpan.textContent, 10);
+                    if (quantity > 1) {
+                        quantity--;
+                        quantitySpan.textContent = quantity;
+                        cartCount--;
+                        document.getElementById("cart-count").textContent = cartCount;
+                    } else {
+                        cartItems.removeChild(listItem);
+                        cartCount--;
+                        document.getElementById("cart-count").textContent = cartCount;
+                    }
+                    updateCartIcon();
+                });
             }
 
             cartCount++;
@@ -494,29 +543,6 @@
             itemImage.addEventListener("transitionend", () => {
                 document.body.removeChild(itemImage);
             });
-        }
-
-        function removeFromCart(menuItem) {
-            const cartItems = document.getElementById("cart-items");
-            const item = Array.from(cartItems.children).find(
-                child => child.dataset.itemName === menuItem
-            );
-
-            if (item) {
-                const quantitySpan = item.querySelector(".item-quantity");
-                let quantity = parseInt(quantitySpan.textContent, 10);
-                quantity--;
-
-                if (quantity > 0) {
-                    quantitySpan.textContent = quantity;
-                } else {
-                    cartItems.removeChild(item);
-                }
-
-                cartCount--;
-                document.getElementById("cart-count").textContent = cartCount;
-                updateCartIcon();
-            }
         }
 
         // Panggil updateCartIcon() di awal untuk memastikan ikon tidak muncul saat kosong
