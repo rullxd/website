@@ -307,8 +307,8 @@ h1 {
 /* Media queries */
 @media (max-width: 768px) {
     .navbar-content {
-        flex-direction: column;
         gap: 1rem;
+        /* flex-direction: column;  Menghapus pengaturan kolom agar tetap horizontal */
     }
 
     .nav-links {
@@ -317,7 +317,8 @@ h1 {
     }
 
     .user-section {
-        margin-left: 0;
+        margin-left: auto;
+        /* Memastikan ikon user tetap berada di sisi kanan */
     }
 
     .content-section {

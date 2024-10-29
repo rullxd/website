@@ -381,3 +381,20 @@ body {
 .theme-toggle i {
     font-size: 1.2rem;
 }
+
+@media (max-width: 768px) {
+    .navbar-content {
+        gap: 1rem;
+        /* flex-direction: column;  Menghapus pengaturan kolom agar tetap horizontal */
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .user-section {
+        margin-left: auto;
+        /* Memastikan ikon user tetap berada di sisi kanan */
+    }
+}
