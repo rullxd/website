@@ -60,6 +60,15 @@
       color: #aaa;
     }
 
+    .input-group .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #666;
+    }
+
     .register-container button {
       width: 100%;
       padding: 12px;
@@ -104,9 +113,11 @@
       </div>
       <div class="input-group">
         <input type="password" id="newPassword" placeholder="Password" required>
+        <i class="fas fa-eye toggle-password" onclick="togglePassword('newPassword', this)"></i>
       </div>
       <div class="input-group">
         <input type="password" id="confirmPassword" placeholder="Konfirmasi Password" required>
+        <i class="fas fa-eye toggle-password" onclick="togglePassword('confirmPassword', this)"></i>
       </div>
       <button type="button" onclick="register()">Daftar</button>
     </form>
@@ -127,9 +138,30 @@
         return;
       }
 
-      // Simpan data pengguna (bisa dikembangkan dengan penyimpanan ke database)
-      alert('Akun berhasil dibuat! Silakan login.');
-      window.location.href = 'login.html'; // Redirect ke halaman login
+      // Kirim data pengguna ke server untuk disimpan di database
+      fetch('http://localhost:3000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, role: 'customer' })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Akun berhasil dibuat! Silakan login.');
+            window.location.href = 'login.html'; // Redirect ke halaman login
+          } else {
+            alert('Registrasi gagal: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Fitur Toggle Password
+    function togglePassword(fieldId, icon) {
+      const field = document.getElementById(fieldId);
+      const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
+      field.setAttribute('type', type);
+      icon.classList.toggle('fa-eye-slash');
     }
   </script>
 

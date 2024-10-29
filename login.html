@@ -167,22 +167,23 @@
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      // Cek login
-      if (users[username] && users[username] === password) {
-        if (username === 'admin') {
-          alert('Selamat datang, Admin!');
-          // Redirect ke halaman admin (bisa diubah sesuai kebutuhan)
-          window.location.href = 'admin.html'; // Ganti dengan URL halaman admin
-        } else if (username === 'customer') {
-
-          // Redirect ke halaman customer (bisa diubah sesuai kebutuhan)
-          window.location.href = 'index.html'; // Ganti dengan URL halaman customer
-        }
-      } else {
-        // Tampilkan pesan kesalahan
-        document.getElementById("error-message").style.display = "block";
-      }
+      fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert(`Selamat datang, ${data.role === 'admin' ? 'Admin' : 'Customer'}!`);
+            window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
+          } else {
+            alert('Username atau password salah.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
     }
+
 
     // Fitur Toggle Password
     const togglePassword = document.getElementById('togglePassword');
