@@ -35,8 +35,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Cek apakah token login ada
-            if (!localStorage.getItem('loginToken')) {
+            const userId = localStorage.getItem('userId'); // Ambil userId dari localStorage
+
+            if (!localStorage.getItem('loginToken') || !userId) {
                 // Jika token tidak ada, arahkan pengguna ke halaman login
                 alert('Anda harus login terlebih dahulu.');
                 window.location.href = 'index.html';
