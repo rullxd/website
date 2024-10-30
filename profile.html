@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna</title>
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="profile-container">
+        <h1>Profil Pengguna</h1>
+        <form id="profileForm" onsubmit="saveProfile(event)">
+            <label>Nama Lengkap:</label>
+            <input type="text" id="fullName" placeholder="Nama Lengkap">
+
+            <label>Email:</label>
+            <input type="email" id="email" placeholder="Email">
+
+            <label>Nomor Telepon:</label>
+            <input type="text" id="phone" placeholder="Nomor Telepon">
+
+            <label>Alamat:</label>
+            <textarea id="address" placeholder="Alamat"></textarea>
+
+            <label>Bio:</label>
+            <textarea id="bio" placeholder="Tentang Anda"></textarea>
+
+            <button type="submit">Simpan Profil</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cek apakah token login ada
+            if (!localStorage.getItem('loginToken')) {
+                // Jika token tidak ada, arahkan pengguna ke halaman login
+                alert('Anda harus login terlebih dahulu.');
+                window.location.href = 'index.html';
+            }
+            loadUserProfile(userId);
+        });
+
+
+        function loadUserProfile(userId) {
+            fetch(`http://localhost:3000/profile?user_id=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('fullName').value = data.profile.full_name || '';
+                        document.getElementById('email').value = data.profile.email || '';
+                        document.getElementById('phone').value = data.profile.phone || '';
+                        document.getElementById('address').value = data.profile.address || '';
+                        document.getElementById('bio').value = data.profile.bio || '';
+                    }
+                })
+                .catch(error => console.error('Error loading profile:', error));
+
+        }
+
+        // Fungsi untuk menyimpan data profil
+        function saveProfile(event) {
+            event.preventDefault();
+
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Anda harus login terlebih dahulu.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const profileData = {
+                user_id: userId,
+                full_name: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                bio: document.getElementById('bio').value
+            };
+
+            fetch('http://localhost:3000/edit-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(profileData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Profil berhasil disimpan!');
+                    } else {
+                        alert('Gagal menyimpan profil.');
+                    }
+                })
+                .catch(error => console.error('Error saving profile:', error));
+        }
+
+
+        // Muat profil saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+
+    <script>
+        // Fungsi untuk mengubah tema
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+            }
+
+            // Simpan preferensi tema ke localStorage
+            localStorage.setItem('theme', html.getAttribute('data-theme') || 'light');
+        }
+
+        // Fungsi untuk memuat tema yang tersimpan
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        }
+
+        // Panggil loadSavedTheme saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
+
+</body>
+
+</html>

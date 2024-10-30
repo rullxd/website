@@ -63,14 +63,13 @@ app.post('/login', (req, res) => {
     // Query untuk mencari pengguna dengan username yang diberikan
     const query = 'SELECT * FROM users WHERE username = ?';
     db.query(query, [username], (err, results) => {
-        if (err) {
-            console.error('Error querying database:', err);
-            res.status(500).json({ success: false, message: 'Internal server error' });
-            return;
+        if (err || results.length === 0) {
+            return res.status(401).json({ success: false, message: 'Invalid username or password' });
         }
 
         if (results.length > 0) {
             const user = results[0];
+            console.log('User data from database:', user); // Logging untuk memastikan user data ada
             // Periksa password dengan bcrypt
             bcrypt.compare(password, user.password, (err, isMatch) => {
                 if (err) {
@@ -78,7 +77,8 @@ app.post('/login', (req, res) => {
                     res.status(500).json({ success: false, message: 'Internal server error' });
                 } else if (isMatch) {
                     const token = Buffer.from(username).toString('base64');
-                    res.json({ success: true, role: user.role, token: token });
+                    console.log('User ID to be sent:', user.id); // Logging untuk memastikan user.id ada dan benar
+                    res.json({ success: true, userId: user.id, role: user.role, token: token });
                 } else {
                     res.status(401).json({ success: false, message: 'Unauthorized' });
                 }
@@ -88,6 +88,36 @@ app.post('/login', (req, res) => {
         }
     });
 });
+
+app.get('/profile', (req, res) => {
+    const userId = req.query.user_id;
+
+    const query = 'SELECT * FROM profiles WHERE user_id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(404).json({ success: false, message: 'Profile not found' });
+        }
+        res.json({ success: true, profile: results[0] });
+    });
+});
+
+app.post('/edit-profile', (req, res) => {
+    const { user_id, full_name, email, phone, address, bio } = req.body;
+
+    const query = `
+        UPDATE profiles 
+        SET full_name = ?, email = ?, phone = ?, address = ?, bio = ?
+        WHERE user_id = ?
+    `;
+
+    db.query(query, [full_name, email, phone, address, bio, user_id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Error updating profile' });
+        }
+        res.json({ success: true, message: 'Profile updated successfully' });
+    });
+});
+
 
 // Menjalankan server di port 3000
 app.listen(3000, () => {

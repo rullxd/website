@@ -48,7 +48,7 @@
         </div>
         <div class="sidebar-content">
             <ul class="sidebar-menu">
-                <li><a href="#">Profil Saya</a></li>
+                <li><a href="profile.html">Profil Saya</a></li>
                 <li><a href="#">Riwayat Pesanan</a></li>
                 <li><a href="#">Reservasi Saya</a></li>
                 <li><a href="#">Pengaturan</a></li>
@@ -176,6 +176,9 @@
         document.addEventListener('DOMContentLoaded', loadSavedTheme);
     </script>
 
+
+
+
     <script>
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -185,7 +188,7 @@
             if (localStorage.getItem('loginToken')) {
                 // Jika token ada, ubah menjadi Logout
                 loginLogoutButton.textContent = 'Logout';
-                loginLogoutButton.href = '#';
+                loginLogoutButton.href = 'index.html';
             } else {
                 // Jika token tidak ada, tetap sebagai Login
                 loginLogoutButton.textContent = 'Login';
@@ -197,8 +200,10 @@
             if (localStorage.getItem('loginToken')) {
                 // Jika sudah login, hapus token untuk logout
                 localStorage.removeItem('loginToken');
+                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
                 window.location.href = 'login.html';
             } else {
+                console.log('Token tidak ditemukan. Pengguna belum login.');
                 // Jika belum login, redirect ke halaman login
                 window.location.href = 'login.html';
             }

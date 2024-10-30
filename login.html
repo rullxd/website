@@ -174,10 +174,17 @@
       })
         .then(response => response.json())
         .then(data => {
+          console.log('Login response:', data); // Logging respons untuk memastikan userId ada
           if (data.success) {
-            localStorage.setItem('loginToken', data.token);
-            alert(`Selamat datang, ${data.role === 'admin' ? 'Admin' : 'Customer'}!`);
-            window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
+            if (data.userId !== undefined) { // Cek apakah userId ada
+              localStorage.setItem('userId', data.userId);
+              localStorage.setItem('loginToken', data.token);
+              alert(`Selamat datang, ${data.role === 'admin' ? 'Admin' : 'Customer'}!`);
+              window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
+            } else {
+              console.error('User ID is missing from the response.');
+
+            }
           } else {
             alert('Username atau password salah.');
           }
