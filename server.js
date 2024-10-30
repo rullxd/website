@@ -77,7 +77,8 @@ app.post('/login', (req, res) => {
                     console.error('Error comparing password:', err);
                     res.status(500).json({ success: false, message: 'Internal server error' });
                 } else if (isMatch) {
-                    res.json({ success: true, role: user.role });
+                    const token = Buffer.from(username).toString('base64');
+                    res.json({ success: true, role: user.role, token: token });
                 } else {
                     res.status(401).json({ success: false, message: 'Unauthorized' });
                 }

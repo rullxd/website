@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
+
+
 </head>
 
 <body>
@@ -57,7 +59,8 @@
                     </a>
                 </li>
             </ul>
-            <a href="login.html" class="sidebar-cta-button">Login</a>
+            <a id="loginLogoutButton" href="login.html" class="sidebar-cta-button"
+                onclick="handleLoginLogout()">Login</a>
         </div>
     </div>
 
@@ -121,6 +124,7 @@
         </div>
     </section>
 
+
     <script>
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
@@ -141,6 +145,9 @@
             }
         });
     </script>
+
+
+
     <script>
         // Fungsi untuk mengubah tema
         function toggleTheme() {
@@ -167,6 +174,37 @@
 
         // Panggil loadSavedTheme saat halaman dimuat
         document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+            // Cek token login
+            if (localStorage.getItem('loginToken')) {
+                // Jika token ada, ubah menjadi Logout
+                loginLogoutButton.textContent = 'Logout';
+                loginLogoutButton.href = '#';
+            } else {
+                // Jika token tidak ada, tetap sebagai Login
+                loginLogoutButton.textContent = 'Login';
+                loginLogoutButton.href = 'login.html';
+            }
+        });
+
+        function handleLoginLogout() {
+            if (localStorage.getItem('loginToken')) {
+                // Jika sudah login, hapus token untuk logout
+                localStorage.removeItem('loginToken');
+                window.location.href = 'login.html';
+            } else {
+                // Jika belum login, redirect ke halaman login
+                window.location.href = 'login.html';
+            }
+        }
+
+
     </script>
 
 </body>

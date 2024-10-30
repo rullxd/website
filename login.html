@@ -175,6 +175,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
+            localStorage.setItem('loginToken', data.token);
             alert(`Selamat datang, ${data.role === 'admin' ? 'Admin' : 'Customer'}!`);
             window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
           } else {
@@ -183,7 +184,13 @@
         })
         .catch(error => console.error('Error:', error));
     }
-
+    // Saat halaman dimuat, cek apakah ada token login
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('loginToken')) {
+        // Redirect ke halaman utama jika pengguna sudah login
+        window.location.href = 'index.html';
+      }
+    });
 
     // Fitur Toggle Password
     const togglePassword = document.getElementById('togglePassword');
