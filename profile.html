@@ -102,7 +102,7 @@
                 inputs.forEach(id => {
                     document.getElementById(id).disabled = false;
                 });
-                document.getElementById('photoUploadContainer').style.display = 'block';
+                document.getElementById('photoUploadContainer').style.display = 'none';
                 document.getElementById('profilePhotoInput').style.display = 'block'; // Tampilkan input file
                 toggleButton.innerText = 'Simpan Profil';
                 toggleButton.onclick = saveProfile;
@@ -131,6 +131,9 @@
                 window.location.href = 'login.html';
                 return;
             }
+            document.getElementById('profilePhotoInput').style.display = 'none'; // Hide file input
+            document.getElementById('toggleButton').innerText = 'Edit Profil';
+            document.getElementById('toggleButton').onclick = toggleEditMode;
 
             const formData = new FormData();
             formData.append('user_id', userId);

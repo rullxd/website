@@ -169,6 +169,8 @@
 #profilePhotoInput {
     display: none;
     /* Sembunyikan input file */
+    margin-top: 2rem;
+    /* Atur jarak atas untuk menurunkan sedikit */
 }
 
 #photoUploadContainer {
