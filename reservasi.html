@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservasi Restoran</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/reservasi.css">
 </head>
@@ -44,7 +45,7 @@
         </div>
         <div class="sidebar-content">
             <ul class="sidebar-menu">
-                <li><a href="#">Profil Saya</a></li>
+                <li><a href="profile.html">Profil Saya</a></li>
                 <li><a href="#">Riwayat Pesanan</a></li>
                 <li><a href="#">Reservasi Saya</a></li>
                 <li><a href="#">Pengaturan</a></li>
@@ -55,7 +56,8 @@
                     </a>
                 </li>
             </ul>
-            <a href="login.html" class="sidebar-cta-button">Login</a>
+            <a id="loginLogoutButton" href="login.html" class="sidebar-cta-button"
+                onclick="handleLoginLogout()">Login</a>
         </div>
     </div>
 
@@ -147,31 +149,6 @@
             </form>
         </div>
     </div>
-
-    <script>
-        // Ambil elemen modal dan tombol close
-        var modal = document.getElementById("reservationModal");
-        var closeBtn = document.getElementsByClassName("close-btn")[0];
-
-        // Fungsi untuk membuka modal
-        document.querySelectorAll('.reserve-btn').forEach(button => {
-            button.onclick = function () {
-                modal.style.display = "block";
-            }
-        });
-
-        // Fungsi untuk menutup modal saat tombol close diklik
-        closeBtn.onclick = function () {
-            modal.style.display = "none";
-        }
-
-        // Tutup modal jika pengguna mengklik area di luar modal
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
     <script>
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
@@ -192,6 +169,26 @@
             }
         });
     </script>
+    <script>
+        // Ambil elemen modal dan tombol close
+        var modal = document.getElementById("reservationModal");
+        var closeBtn = document.getElementsByClassName("close-btn")[0];
+
+        // Fungsi untuk membuka modal
+        document.querySelectorAll('.reserve-btn').forEach(button => {
+            button.onclick = function () {
+                modal.style.display = "block";
+            }
+        });
+
+        // Tutup modal jika pengguna mengklik area di luar modal
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
     <script>
         // Fungsi untuk mengubah tema
         function toggleTheme() {
@@ -218,6 +215,38 @@
 
         // Panggil loadSavedTheme saat halaman dimuat
         document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+            // Cek token login
+            if (localStorage.getItem('loginToken')) {
+                // Jika token ada, ubah menjadi Logout
+                loginLogoutButton.textContent = 'Logout';
+                loginLogoutButton.href = 'index.html';
+            } else {
+                // Jika token tidak ada, tetap sebagai Login
+                loginLogoutButton.textContent = 'Login';
+                loginLogoutButton.href = 'login.html';
+            }
+        });
+
+        function handleLoginLogout() {
+            if (localStorage.getItem('loginToken')) {
+                // Jika sudah login, hapus token untuk logout
+                localStorage.removeItem('loginToken');
+                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
+                window.location.href = 'login.html';
+            } else {
+                console.log('Token tidak ditemukan. Pengguna belum login.');
+                // Jika belum login, redirect ke halaman login
+                window.location.href = 'login.html';
+            }
+        }
+
+
     </script>
 
 </body>
