@@ -109,9 +109,13 @@ body {
 
 .category-header {
     font-size: 2rem;
-    color: #e74c3c;
-    margin-top: 50px;
+    color: var(--primary-color);
+    margin-top: 40px;
     text-align: center;
+    padding: 10px;
+    background-color: var(--background-primary);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .menu-grid {
@@ -132,7 +136,8 @@ body {
 }
 
 .menu-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .menu-image {
@@ -152,6 +157,13 @@ body {
 .menu-description {
     font-size: 1rem;
     color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.menu-price {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    font-weight: bold;
     margin-bottom: 10px;
 }
 
@@ -187,23 +199,24 @@ body {
 
 .menu-price {
     font-size: 1.2rem;
-    color: #e74c3c;
+    color: var(--primary-color);
     font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .order-btn {
     display: inline-block;
-    margin-top: 15px;
     padding: 10px 20px;
-    background-color: #e74c3c;
+    background-color: var(--primary-color);
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    font-weight: bold;
     transition: background-color 0.3s;
 }
 
 .order-btn:hover {
-    background-color: #c0392b;
+    background-color: var(--primary-color-dark);
 }
 
 
@@ -214,7 +227,7 @@ body {
     position: fixed;
     bottom: 20px;
     left: 20px;
-    background-color: #e74c3c;
+    background-color: var(--primary-color);
     color: white;
     padding: 15px;
     border-radius: 50%;

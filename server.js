@@ -43,6 +43,16 @@ db.connect((err) => {
     }
 });
 
+app.get('/menu', (req, res) => {
+    const query = 'SELECT * FROM menu_items';
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal mengambil data menu' });
+        }
+        res.json({ success: true, menu: results });
+    });
+});
+
 // Endpoint untuk registrasi
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
