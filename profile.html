@@ -17,23 +17,25 @@
         <!-- Tombol X untuk kembali ke halaman sebelumnya -->
         <button class="close-button" onclick="goBack()">X</button>
 
-        <form id="profileForm" onsubmit="saveProfile(event)">
+        <!-- Formulir Profil -->
+        <form id="profileForm" onsubmit="return false;">
             <label>Nama Lengkap:</label>
-            <input type="text" id="fullName" placeholder="Nama Lengkap">
+            <input type="text" id="fullName" placeholder="Nama Lengkap" disabled>
 
             <label>Email:</label>
-            <input type="email" id="email" placeholder="Email">
+            <input type="email" id="email" placeholder="Email" disabled>
 
             <label>Nomor Telepon:</label>
-            <input type="text" id="phone" placeholder="Nomor Telepon">
+            <input type="text" id="phone" placeholder="Nomor Telepon" disabled>
 
             <label>Alamat:</label>
-            <textarea id="address" placeholder="Alamat"></textarea>
+            <textarea id="address" placeholder="Alamat" disabled></textarea>
 
             <label>Bio:</label>
-            <textarea id="bio" placeholder="Tentang Anda"></textarea>
+            <textarea id="bio" placeholder="Tentang Anda" disabled></textarea>
 
-            <button type="submit">Simpan Profil</button>
+            <!-- Tombol Edit/Simpan -->
+            <button type="button" id="toggleButton" onclick="toggleEditMode()">Edit Profil</button>
         </form>
     </div>
 
@@ -64,6 +66,23 @@
                 })
                 .catch(error => console.error('Error loading profile:', error));
 
+        }
+
+        // Fungsi untuk mengaktifkan/mematikan mode edit
+        function toggleEditMode() {
+            const inputs = ['fullName', 'email', 'phone', 'address', 'bio'];
+            const isDisabled = document.getElementById('fullName').disabled;
+
+            if (isDisabled) {
+                // Hapus disabled dari semua input
+                inputs.forEach(id => {
+                    document.getElementById(id).disabled = false;
+                });
+
+                // Ubah teks tombol menjadi "Simpan Profil"
+                document.getElementById('toggleButton').innerText = 'Simpan Profil';
+                document.getElementById('toggleButton').setAttribute('onclick', 'saveProfile(event)');
+            }
         }
         function goBack() {
             window.history.back();
@@ -98,6 +117,16 @@
                 .then(data => {
                     if (data.success) {
                         alert('Profil berhasil disimpan!');
+                        // Mengunci kembali input form setelah menyimpan
+                        document.getElementById('fullName').disabled = true;
+                        document.getElementById('email').disabled = true;
+                        document.getElementById('phone').disabled = true;
+                        document.getElementById('address').disabled = true;
+                        document.getElementById('bio').disabled = true;
+
+                        // Ubah tombol kembali menjadi "Edit Profil"
+                        document.getElementById('toggleButton').innerText = 'Edit Profil';
+                        document.getElementById('toggleButton').setAttribute('onclick', 'toggleEditMode()');
                     } else {
                         alert('Gagal menyimpan profil.');
                     }
