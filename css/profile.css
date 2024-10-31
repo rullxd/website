@@ -166,6 +166,16 @@
     color: #333;
 }
 
+#profilePhotoInput {
+    display: none;
+    /* Sembunyikan input file */
+}
+
+#photoUploadContainer {
+    display: none;
+    /* Sembunyikan div yang berisi label dan input file */
+}
+
 /* Media Query */
 @media (max-width: 768px) {
     .profile-container {

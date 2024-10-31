@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors'); // Middleware untuk mengatasi CORS
 const mysql = require('mysql'); // Paket untuk koneksi MySQL
 const bcrypt = require('bcrypt'); // Paket untuk hashing password
-
+const multer = require('multer'); // Untuk mengunggah file
+const path = require('path'); // Untuk manipulasi path
 // Inisialisasi aplikasi Express
 const app = express();
 
@@ -12,6 +13,18 @@ app.use(cors());
 
 // Middleware untuk parsing JSON dalam permintaan
 app.use(express.json());
+
+// Konfigurasi penyimpanan multer untuk menyimpan file foto profil
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/profile_photos'); // Tentukan folder penyimpanan
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Nama file unik
+    }
+});
+const upload = multer({ storage: storage });
+
 
 // Konfigurasi koneksi MySQL
 const db = mysql.createConnection({
@@ -101,22 +114,41 @@ app.get('/profile', (req, res) => {
     });
 });
 
-app.post('/edit-profile', (req, res) => {
+app.post('/edit-profile', upload.single('profile_photo'), (req, res) => {
     const { user_id, full_name, email, phone, address, bio } = req.body;
+    let profilePhotoPath = req.file ? `/uploads/profile_photos/${req.file.filename}` : null;
 
-    const query = `
-        UPDATE profiles 
-        SET full_name = ?, email = ?, phone = ?, address = ?, bio = ?
-        WHERE user_id = ?
-    `;
+    // Jika tidak ada foto baru yang diunggah, gunakan foto lama
+    if (!profilePhotoPath) {
+        const getPhotoQuery = 'SELECT profile_photo FROM profiles WHERE user_id = ?';
+        db.query(getPhotoQuery, [user_id], (err, results) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Error retrieving profile photo' });
+            }
+            profilePhotoPath = results[0].profile_photo;
+            updateProfile();
+        });
+    } else {
+        updateProfile();
+    }
 
-    db.query(query, [full_name, email, phone, address, bio, user_id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Error updating profile' });
-        }
-        res.json({ success: true, message: 'Profile updated successfully' });
-    });
+    function updateProfile() {
+        const query = `
+            UPDATE profiles 
+            SET full_name = ?, email = ?, phone = ?, address = ?, bio = ?, profile_photo = ?
+            WHERE user_id = ?
+        `;
+
+        db.query(query, [full_name, email, phone, address, bio, profilePhotoPath, user_id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Error updating profile' });
+            }
+            res.json({ success: true, message: 'Profile updated successfully' });
+        });
+    }
 });
+// Middleware untuk membuat folder `uploads` dapat diakses secara publik
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // Menjalankan server di port 3000

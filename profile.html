@@ -17,8 +17,18 @@
         <!-- Tombol X untuk kembali ke halaman sebelumnya -->
         <button class="close-button" onclick="goBack()">X</button>
 
+        <!-- Pratinjau Foto Profil -->
+        <div class="profile-photo">
+            <img id="profileImage" src="default-profile.png" alt="Foto Profil" width="150" height="150">
+        </div>
+
         <!-- Formulir Profil -->
         <form id="profileForm" onsubmit="return false;">
+            <div id="photoUploadContainer">
+                <label>Foto Profil:</label>
+            </div>
+            <input type="file" id="profilePhotoInput" accept="image/*" onchange="previewPhoto()" disabled>
+
             <label>Nama Lengkap:</label>
             <input type="text" id="fullName" placeholder="Nama Lengkap" disabled>
 
@@ -51,7 +61,6 @@
             loadUserProfile(userId);
         });
 
-
         function loadUserProfile(userId) {
             fetch(`http://localhost:3000/profile?user_id=${userId}`)
                 .then(response => response.json())
@@ -62,33 +71,57 @@
                         document.getElementById('phone').value = data.profile.phone || '';
                         document.getElementById('address').value = data.profile.address || '';
                         document.getElementById('bio').value = data.profile.bio || '';
+
+                        // Memuat gambar profil jika ada
+                        const profilePhoto = data.profile.profile_photo ? `http://localhost:3000${data.profile.profile_photo}` : 'default-profile.png';
+                        document.getElementById('profileImage').src = profilePhoto;
                     }
                 })
                 .catch(error => console.error('Error loading profile:', error));
+        }
 
+        function previewPhoto() {
+            const file = document.getElementById('profilePhotoInput').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         // Fungsi untuk mengaktifkan/mematikan mode edit
         function toggleEditMode() {
-            const inputs = ['fullName', 'email', 'phone', 'address', 'bio'];
+            const inputs = ['profilePhotoInput', 'fullName', 'email', 'phone', 'address', 'bio'];
             const isDisabled = document.getElementById('fullName').disabled;
+            const toggleButton = document.getElementById('toggleButton');
 
             if (isDisabled) {
-                // Hapus disabled dari semua input
+                // Ubah ke mode edit
                 inputs.forEach(id => {
                     document.getElementById(id).disabled = false;
                 });
-
-                // Ubah teks tombol menjadi "Simpan Profil"
-                document.getElementById('toggleButton').innerText = 'Simpan Profil';
-                document.getElementById('toggleButton').setAttribute('onclick', 'saveProfile(event)');
+                document.getElementById('photoUploadContainer').style.display = 'block';
+                document.getElementById('profilePhotoInput').style.display = 'block'; // Tampilkan input file
+                toggleButton.innerText = 'Simpan Profil';
+                toggleButton.onclick = saveProfile;
+            } else {
+                // Kembali ke mode non-edit tanpa menyimpan
+                inputs.forEach(id => {
+                    document.getElementById(id).disabled = true;
+                });
+                document.getElementById('photoUploadContainer').style.display = 'none';
+                document.getElementById('profilePhotoInput').style.display = 'none'; // Sembunyikan input file
+                toggleButton.innerText = 'Edit Profil';
+                toggleButton.onclick = toggleEditMode;
             }
         }
+
         function goBack() {
             window.history.back();
         }
 
-        // Fungsi untuk menyimpan data profil
         function saveProfile(event) {
             event.preventDefault();
 
@@ -99,72 +132,44 @@
                 return;
             }
 
-            const profileData = {
-                user_id: userId,
-                full_name: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value,
-                bio: document.getElementById('bio').value
-            };
+            const formData = new FormData();
+            formData.append('user_id', userId);
+            formData.append('full_name', document.getElementById('fullName').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('phone', document.getElementById('phone').value);
+            formData.append('address', document.getElementById('address').value);
+            formData.append('bio', document.getElementById('bio').value);
+
+            const photoFile = document.getElementById('profilePhotoInput').files[0];
+            if (photoFile) {
+                formData.append('profile_photo', photoFile);
+            }
 
             fetch('http://localhost:3000/edit-profile', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(profileData)
+                body: formData
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         alert('Profil berhasil disimpan!');
-                        // Mengunci kembali input form setelah menyimpan
-                        document.getElementById('fullName').disabled = true;
-                        document.getElementById('email').disabled = true;
-                        document.getElementById('phone').disabled = true;
-                        document.getElementById('address').disabled = true;
-                        document.getElementById('bio').disabled = true;
 
-                        // Ubah tombol kembali menjadi "Edit Profil"
-                        document.getElementById('toggleButton').innerText = 'Edit Profil';
-                        document.getElementById('toggleButton').setAttribute('onclick', 'toggleEditMode()');
+                        // Kunci kembali semua input setelah menyimpan
+                        const inputs = ['profilePhotoInput', 'fullName', 'email', 'phone', 'address', 'bio'];
+                        inputs.forEach(id => {
+                            document.getElementById(id).disabled = true;
+                        });
+
+                        // Ubah tombol kembali ke "Edit Profil"
+                        const toggleButton = document.getElementById('toggleButton');
+                        toggleButton.innerText = 'Edit Profil';
+                        toggleButton.onclick = toggleEditMode;
                     } else {
                         alert('Gagal menyimpan profil.');
                     }
                 })
                 .catch(error => console.error('Error saving profile:', error));
         }
-
-
-        // Muat profil saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', loadProfile);
-    </script>
-
-    <script>
-        // Fungsi untuk mengubah tema
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-
-            if (currentTheme === 'dark') {
-                html.removeAttribute('data-theme');
-            } else {
-                html.setAttribute('data-theme', 'dark');
-            }
-
-            // Simpan preferensi tema ke localStorage
-            localStorage.setItem('theme', html.getAttribute('data-theme') || 'light');
-        }
-
-        // Fungsi untuk memuat tema yang tersimpan
-        function loadSavedTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            }
-        }
-
-        // Panggil loadSavedTheme saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', loadSavedTheme);
     </script>
 
 </body>
