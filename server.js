@@ -92,15 +92,14 @@ app.post('/login', (req, res) => {
 
         if (results.length > 0) {
             const user = results[0];
-            console.log('User data from database:', user); // Logging untuk memastikan user data ada
-            // Periksa password dengan bcrypt
+
             bcrypt.compare(password, user.password, (err, isMatch) => {
                 if (err) {
                     console.error('Error comparing password:', err);
                     res.status(500).json({ success: false, message: 'Internal server error' });
                 } else if (isMatch) {
                     const token = Buffer.from(username).toString('base64');
-                    console.log('User ID to be sent:', user.id); // Logging untuk memastikan user.id ada dan benar
+
                     res.json({ success: true, userId: user.id, role: user.role, token: token });
                 } else {
                     res.status(401).json({ success: false, message: 'Unauthorized' });
