@@ -161,13 +161,28 @@
         // Fungsi untuk menambahkan item ke keranjang dengan animasi
         // Fungsi untuk menambahkan item ke keranjang dengan animasi
         function updateCartIcon() {
+            const cartPopup = document.getElementById("cart-popup");
             const cartIcon = document.getElementById("cart-icon");
+
             if (cartCount > 0) {
                 cartIcon.style.display = "flex";
             } else {
                 cartIcon.style.display = "none";
+                cartPopup.style.display = "none";
             }
         }
+        document.addEventListener('click', function (event) {
+            const cartPopup = document.getElementById("cart-popup");
+            const cartIcon = document.getElementById("cart-icon");
+
+            // Tutup popup jika klik terjadi di luar popup dan ikon keranjang
+            if (!cartPopup.contains(event.target) && !cartIcon.contains(event.target)) {
+                closeCart();
+            }
+        });
+
+        // Panggil updateCartIcon() di awal untuk memastikan ikon dan tombol ditampilkan dengan benar
+        updateCartIcon();
 
         function addToCart(menuItem, harga, itemImageSrc, event) {
             const cartItems = document.getElementById("cart-items");
