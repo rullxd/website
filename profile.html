@@ -13,6 +13,10 @@
 
     <div class="profile-container">
         <h1>Profil Pengguna</h1>
+
+        <!-- Tombol X untuk kembali ke halaman sebelumnya -->
+        <button class="close-button" onclick="goBack()">X</button>
+
         <form id="profileForm" onsubmit="saveProfile(event)">
             <label>Nama Lengkap:</label>
             <input type="text" id="fullName" placeholder="Nama Lengkap">
@@ -60,6 +64,9 @@
                 })
                 .catch(error => console.error('Error loading profile:', error));
 
+        }
+        function goBack() {
+            window.history.back();
         }
 
         // Fungsi untuk menyimpan data profil
