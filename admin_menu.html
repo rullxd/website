@@ -43,6 +43,7 @@
     <!-- Tabel Menu yang Ada -->
     <section>
         <h2>Daftar Menu</h2>
+        <input type="text" id="searchInput" placeholder="Cari menu..." oninput="filterMenu()">
         <table id="menuTable">
             <thead>
                 <tr>
@@ -89,6 +90,26 @@
                 })
                 .catch(error => console.error('Gagal memuat menu:', error));
         }
+
+        function filterMenu() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.getElementById('menuTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 0; j < cells.length - 1; j++) {  // Hindari kolom 'Aksi'
+                    if (cells[j].textContent.toLowerCase().includes(searchInput)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = found ? '' : 'none';
+            }
+        }
+
         function editMenu(id) {
             fetch(`http://localhost:3000/menu/${id}`)
                 .then(response => {

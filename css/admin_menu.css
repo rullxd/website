@@ -52,6 +52,26 @@ h2 {
     margin-bottom: 20px;
 }
 
+/* Styling untuk Input Pencarian */
+#searchInput {
+    width: 90%;
+    max-width: 500px;
+    padding: 10px;
+    margin: 10px auto 20px;
+    display: block;
+    border: 1px solid var(--shadow-color);
+    border-radius: 5px;
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+#searchInput::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
 /* Form Styling */
 form#addMenuForm {
     display: flex;
