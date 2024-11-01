@@ -19,53 +19,48 @@
             line-height: 1.6;
             color: #333;
             background-color: #f9f9f9;
+            display: flex;
         }
 
-        /* Navbar Admin */
+        /* Sidebar */
         .admin-navbar {
             background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 1rem 5%;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            width: 80px;
             position: fixed;
-            width: 100%;
-            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
             z-index: 1000;
         }
 
-        .admin-navbar-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
+        .admin-navbar .icon {
             font-size: 1.5rem;
-            font-weight: bold;
-            color: #e74c3c;
-        }
-
-        .admin-nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .admin-nav-links a {
-            text-decoration: none;
             color: #333;
-            font-weight: 500;
+            margin: 1rem 0;
+            cursor: pointer;
             transition: color 0.3s;
         }
 
-        .admin-nav-links a:hover {
+        .admin-navbar .icon:hover {
             color: #e74c3c;
         }
 
-        /* Konten utama */
+        .admin-navbar .top-icons,
+        .admin-navbar .bottom-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
         .dashboard-container {
+            margin-left: 100px;
+            /* Offset content for the sidebar width */
             padding: 3rem 5%;
-            margin-top: 80px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
@@ -91,11 +86,10 @@
 
         .chart {
             height: 300px;
-            /* Sesuaikan tinggi grafik */
             margin-top: 1rem;
         }
 
-        /* Grafik dan Statistik */
+        /* Statistik */
         .statistics {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -133,15 +127,16 @@
 
 <body>
     <nav class="admin-navbar">
-        <div class="admin-navbar-content">
-            <div class="logo">LOGO ADMIN</div>
-            <div class="admin-nav-links">
-                <a href="admin.html">Dashboard</a>
-                <a href="reservasi_admin.html">Reservasi</a>
-                <a href="admin_menu.html">Menu</a>
-                <a href="laporan_admin.html">Laporan</a>
-                <a href="pengaturan.html">Pengaturan</a>
-            </div>
+        <div class="top-icons">
+            <div class="icon"><i class="fas fa-user-circle"></i></div>
+            <div class="icon"><i class="fas fa-tachometer-alt"></i></div>
+            <div class="icon"><i class="fas fa-calendar-alt"></i></div>
+            <a href="admin_menu.html" class="icon"><i class="fas fa-utensils"></i></a>
+            <div class="icon"><i class="fas fa-chart-line"></i></div>
+            <div class="icon"><i class="fas fa-cog"></i></div>
+        </div>
+        <div class="bottom-icons">
+            <div class="icon"><i class="fas fa-sign-out-alt"></i></div>
         </div>
     </nav>
 
@@ -191,15 +186,7 @@
     </div>
 
     <script>
-        // Script untuk membuat grafik
-        // Anda bisa menggunakan library grafik seperti Chart.js atau D3.js
-        // Berikut adalah contoh pengisian grafik menggunakan Chart.js
-        // Di sini, Anda harus memasukkan kode untuk menggambar grafik
-
-        // Contoh:
-        // var ctx = document.getElementById('total-reservasi-chart').getContext('2d');
-        // var myChart = new Chart(ctx, { ... });
-
+        // Script untuk membuat grafik menggunakan library seperti Chart.js atau D3.js
     </script>
 </body>
 
