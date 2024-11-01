@@ -186,15 +186,17 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const userId = localStorage.getItem('userId'); // Get userId from localStorage
+            const loginToken = localStorage.getItem('loginToken');
+            const userRole = localStorage.getItem('userRole');
 
-            if (!localStorage.getItem('loginToken') || !userId) {
-                // If token or userId is missing, redirect the user to the login page
-                alert('Anda harus login terlebih dahulu.');
-                window.location.href = 'index.html'; // Adjust to your login page URL
+            if (!loginToken || userRole !== 'admin') {
+                // Jika token tidak ada atau role bukan admin, arahkan pengguna ke halaman login atau halaman error
+                alert('Anda tidak memiliki izin untuk mengakses halaman ini.');
+                window.location.href = 'index.html'; // Ubah ke halaman yang sesuai, misalnya halaman login atau error
             }
         });
     </script>
+
 
     <script>
         function handleLoginLogout() {
