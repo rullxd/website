@@ -45,7 +45,7 @@
         </div>
         <div class="sidebar-content">
             <ul class="sidebar-menu">
-                <li><a href="#">Profil Saya</a></li>
+                <li><a href="profile.html">Profil Saya</a></li>
                 <li><a href="#">Riwayat Pesanan</a></li>
                 <li><a href="#">Reservasi Saya</a></li>
                 <li><a href="#">Pengaturan</a></li>
@@ -56,7 +56,8 @@
                     </a>
                 </li>
             </ul>
-            <a href="login.html" class="sidebar-cta-button">Login</a>
+            <a id="loginLogoutButton" href="login.html" class="sidebar-cta-button"
+                onclick="handleLoginLogout()">Login</a>
         </div>
     </div>
 
@@ -173,6 +174,38 @@
 
         // Panggil loadSavedTheme saat halaman dimuat
         document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+            // Cek token login
+            if (localStorage.getItem('loginToken')) {
+                // Jika token ada, ubah menjadi Logout
+                loginLogoutButton.textContent = 'Logout';
+                loginLogoutButton.href = 'index.html';
+            } else {
+                // Jika token tidak ada, tetap sebagai Login
+                loginLogoutButton.textContent = 'Login';
+                loginLogoutButton.href = 'login.html';
+            }
+        });
+
+        function handleLoginLogout() {
+            if (localStorage.getItem('loginToken')) {
+                // Jika sudah login, hapus token untuk logout
+                localStorage.removeItem('loginToken');
+                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
+                window.location.href = 'login.html';
+            } else {
+                console.log('Token tidak ditemukan. Pengguna belum login.');
+                // Jika belum login, redirect ke halaman login
+                window.location.href = 'login.html';
+            }
+        }
+
+
     </script>
 
 
