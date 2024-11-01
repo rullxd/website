@@ -268,8 +268,6 @@
                 itemImage.style.transition = "all 0.6s ease";
                 itemImage.style.top = `${cartIcon.getBoundingClientRect().top}px`;
                 itemImage.style.left = `${cartIcon.getBoundingClientRect().left}px`;
-                itemImage.style.transform = "scale(0)";
-                itemImage.style.opacity = "0";
             }, 100);
 
             itemImage.addEventListener("transitionend", () => {
@@ -291,6 +289,158 @@
                 const itemImageSrc = this.parentNode.querySelector('.menu-image').src;
                 addToCart(menuItem, harga, itemImageSrc, event);
             });
+        });
+
+        // Variabel global untuk menyimpan user_id
+        let userId = null;
+
+        // Fungsi untuk mengambil cart items dari server saat halaman dimuat
+        function loadCartItems() {
+            const loginToken = localStorage.getItem('loginToken');
+            userId = localStorage.getItem('userId');
+
+            if (userId) {
+                fetch(`http://localhost:3000/cart/${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Reset cart count
+                            cartCount = 0;
+
+                            // Clear existing cart items
+                            const cartItems = document.getElementById("cart-items");
+                            cartItems.innerHTML = '';
+
+                            // Add items from database to cart
+                            data.cart_items.forEach(item => {
+                                addToCartFromDB(item);
+                            });
+
+                            updateCartIcon();
+                        }
+                    })
+                    .catch(error => console.error('Error loading cart:', error));
+            }
+        }
+
+        // Fungsi untuk menambahkan item dari database ke cart
+        function addToCartFromDB(item) {
+            const cartItems = document.getElementById("cart-items");
+            const listItem = document.createElement("li");
+            listItem.dataset.itemName = item.menu_item_name;
+            listItem.innerHTML = `
+        ${item.menu_item_name} - Rp ${item.price} x 
+        <span class="item-quantity">${item.quantity}</span>
+        <span class="icon-button increase-btn">+</span>
+        <span class="icon-button decrease-btn">−</span>
+    `;
+
+            cartItems.appendChild(listItem);
+            cartCount += item.quantity;
+            document.getElementById("cart-count").textContent = cartCount;
+
+            // Add event listeners for + and - buttons
+            addQuantityControlListeners(listItem, item);
+        }
+
+        // Modifikasi fungsi addToCart untuk menyimpan ke database
+        function addToCart(menuItem, harga, itemImageSrc, event) {
+            if (!userId) {
+                alert('Silakan login terlebih dahulu');
+                return;
+            }
+
+            const price = parseFloat(harga.replace('Rp ', '').replace(',', ''));
+
+            fetch('http://localhost:3000/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    menu_item_name: menuItem,
+                    quantity: 1,
+                    price: price,
+                    image_url: itemImageSrc
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadCartItems(); // Reload cart items from server
+
+                        // Animasi item
+                        const itemImage = document.createElement("img");
+                        itemImage.src = itemImageSrc;
+                        itemImage.className = "menu-item-animate";
+                        // ... kode animasi yang sudah ada ...
+                    }
+                })
+                .catch(error => console.error('Error adding to cart:', error));
+        }
+
+        // Fungsi untuk menambahkan event listeners pada tombol + dan -
+        function addQuantityControlListeners(listItem, item) {
+            listItem.querySelector(".increase-btn").addEventListener("click", () => {
+                updateCartItemQuantity(item.menu_item_name, item.quantity + 1);
+            });
+
+            listItem.querySelector(".decrease-btn").addEventListener("click", () => {
+                if (item.quantity > 1) {
+                    updateCartItemQuantity(item.menu_item_name, item.quantity - 1);
+                } else {
+                    removeCartItem(item.menu_item_name);
+                }
+            });
+        }
+
+        // Fungsi untuk update quantity
+        function updateCartItemQuantity(menuItemName, newQuantity) {
+            fetch('http://localhost:3000/cart/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    menu_item_name: menuItemName,
+                    quantity: newQuantity
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadCartItems(); // Reload cart items from server
+                    }
+                })
+                .catch(error => console.error('Error updating cart:', error));
+        }
+
+        // Fungsi untuk menghapus item
+        function removeCartItem(menuItemName) {
+            fetch('http://localhost:3000/cart/remove', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    menu_item_name: menuItemName
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadCartItems(); // Reload cart items from server
+                    }
+                })
+                .catch(error => console.error('Error removing cart item:', error));
+        }
+
+        // Panggil loadCartItems saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCartItems();
         });
     </script>
     <script>
@@ -373,6 +523,8 @@
 
 
     </script>
+
+
 
 
 </body>

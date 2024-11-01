@@ -159,6 +159,88 @@ app.post('/edit-profile', upload.single('profile_photo'), (req, res) => {
 // Middleware untuk membuat folder `uploads` dapat diakses secara publik
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+app.post('/cart/add', (req, res) => {
+    const { user_id, menu_item_name, quantity, price, image_url } = req.body;
+
+    // Cek apakah item sudah ada di keranjang user
+    const checkQuery = 'SELECT * FROM cart_items WHERE user_id = ? AND menu_item_name = ?';
+    db.query(checkQuery, [user_id, menu_item_name], (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Error checking cart item' });
+        }
+
+        if (results.length > 0) {
+            // Update quantity jika item sudah ada
+            const updateQuery = 'UPDATE cart_items SET quantity = quantity + ? WHERE user_id = ? AND menu_item_name = ?';
+            db.query(updateQuery, [quantity, user_id, menu_item_name], (err, result) => {
+                if (err) {
+                    return res.status(500).json({ success: false, message: 'Error updating cart item' });
+                }
+                res.json({ success: true, message: 'Cart item updated successfully' });
+            });
+        } else {
+            // Insert item baru jika belum ada
+            const insertQuery = 'INSERT INTO cart_items (user_id, menu_item_name, quantity, price, image_url) VALUES (?, ?, ?, ?, ?)';
+            db.query(insertQuery, [user_id, menu_item_name, quantity, price, image_url], (err, result) => {
+                if (err) {
+                    return res.status(500).json({ success: false, message: 'Error adding cart item' });
+                }
+                res.json({ success: true, message: 'Cart item added successfully' });
+            });
+        }
+    });
+});
+
+// Endpoint untuk mengambil keranjang user
+app.get('/cart/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    const query = 'SELECT * FROM cart_items WHERE user_id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Error fetching cart items' });
+        }
+        res.json({ success: true, cart_items: results });
+    });
+});
+
+// Endpoint untuk update quantity item
+app.put('/cart/update', (req, res) => {
+    const { user_id, menu_item_name, quantity } = req.body;
+
+    if (quantity <= 0) {
+        // Hapus item jika quantity 0 atau kurang
+        const deleteQuery = 'DELETE FROM cart_items WHERE user_id = ? AND menu_item_name = ?';
+        db.query(deleteQuery, [user_id, menu_item_name], (err, result) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Error removing cart item' });
+            }
+            res.json({ success: true, message: 'Cart item removed successfully' });
+        });
+    } else {
+        // Update quantity
+        const updateQuery = 'UPDATE cart_items SET quantity = ? WHERE user_id = ? AND menu_item_name = ?';
+        db.query(updateQuery, [quantity, user_id, menu_item_name], (err, result) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Error updating cart item' });
+            }
+            res.json({ success: true, message: 'Cart item updated successfully' });
+        });
+    }
+});
+
+// Endpoint untuk menghapus item dari keranjang
+app.delete('/cart/remove', (req, res) => {
+    const { user_id, menu_item_name } = req.body;
+
+    const query = 'DELETE FROM cart_items WHERE user_id = ? AND menu_item_name = ?';
+    db.query(query, [user_id, menu_item_name], (err, result) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Error removing cart item' });
+        }
+        res.json({ success: true, message: 'Cart item removed successfully' });
+    });
+});
 
 // Menjalankan server di port 3000
 app.listen(3000, () => {
