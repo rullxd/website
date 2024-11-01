@@ -164,10 +164,15 @@
             const cartPopup = document.getElementById("cart-popup");
             const cartIcon = document.getElementById("cart-icon");
 
+            // Tampilkan ikon keranjang hanya jika ada item di keranjang
             if (cartCount > 0) {
                 cartIcon.style.display = "flex";
             } else {
                 cartIcon.style.display = "none";
+            }
+
+            // Tutup popup hanya jika total item 0
+            if (cartCount === 0) {
                 cartPopup.style.display = "none";
             }
         }
@@ -176,7 +181,7 @@
             const cartIcon = document.getElementById("cart-icon");
 
             // Tutup popup jika klik terjadi di luar popup dan ikon keranjang
-            if (!cartPopup.contains(event.target) && !cartIcon.contains(event.target)) {
+            if (!cartPopup.contains(event.target) && !cartIcon.contains(event.target) && cartCount === 0) {
                 closeCart();
             }
         });
