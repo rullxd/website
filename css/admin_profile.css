@@ -1,0 +1,140 @@
+/* Reset and Basic Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    display: flex;
+}
+
+/* Sidebar Styling */
+.admin-navbar {
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    width: 80px;
+    position: fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    z-index: 1000;
+}
+
+.admin-navbar .icon {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 1rem 0;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.admin-navbar .icon:hover {
+    color: #e74c3c;
+}
+
+/* Profile Container */
+.profile-container {
+    margin-left: 100px;
+    padding: 2rem 5%;
+}
+
+.profile-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+/* Profile Picture */
+.profile-photo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.profile-photo img {
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Form Styling */
+#profileForm label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+#profileForm input,
+#profileForm textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+}
+
+#profileForm button {
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+#profileForm button:hover {
+    background-color: #c0392b;
+}
+
+/* Dashboard Container for Admin Statistics */
+.dashboard-container {
+    margin-left: 100px;
+    padding: 2rem 5%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.statistics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.stat-card {
+    background: #e74c3c;
+    color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    font-size: 1rem;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+
+    .statistics {
+        grid-template-columns: 1fr;
+    }
+}

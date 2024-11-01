@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Admin</title>
+    <link rel="stylesheet" href="css/admin_profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Sidebar for Admin Navigation -->
+    <nav class="admin-navbar">
+        <div class="top-icons">
+            <a href="admin_profile.html" class="icon"><i class="fas fa-user-circle"></i></a>
+            <a href="dashboard.html" class="icon"><i class="fas fa-tachometer-alt"></i></a>
+            <a href="calendar.html" class="icon"><i class="fas fa-calendar-alt"></i></a>
+            <a href="admin_menu.html" class="icon"><i class="fas fa-utensils"></i></a>
+            <a href="reports.html" class="icon"><i class="fas fa-chart-line"></i></a>
+            <a href="settings.html" class="icon"><i class="fas fa-cog"></i></a>
+        </div>
+        <div class="bottom-icons">
+            <a href="admin.html" class="icon" onclick="handleLoginLogout()"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </nav>
+
+    <div class="profile-container" style="margin-left: 100px;">
+        <h1>Profil Admin</h1>
+
+        <!-- Admin Profile Picture -->
+        <div class="profile-photo">
+            <img id="profileImage" src="default-profile.png" alt="Foto Profil Admin" width="150" height="150">
+        </div>
+
+        <!-- Admin Profile Form -->
+        <form id="profileForm" onsubmit="return false;">
+            <label>Nama Lengkap:</label>
+            <input type="text" id="fullName" placeholder="Nama Lengkap" disabled>
+
+            <label>Email:</label>
+            <input type="email" id="email" placeholder="Email" disabled>
+
+            <label>Nomor Telepon:</label>
+            <input type="text" id="phone" placeholder="Nomor Telepon" disabled>
+
+            <label>Alamat:</label>
+            <textarea id="address" placeholder="Alamat" disabled></textarea>
+
+            <label>Bio:</label>
+            <textarea id="bio" placeholder="Tentang Anda" disabled></textarea>
+
+            <button type="button" id="toggleButton" onclick="toggleEditMode()">Edit Profil</button>
+        </form>
+    </div>
+
+    <script src="admin_profile.js"></script>
+</body>
+
+</html>
