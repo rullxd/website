@@ -136,7 +136,7 @@
             <div class="icon"><i class="fas fa-cog"></i></div>
         </div>
         <div class="bottom-icons">
-            <div class="icon"><i class="fas fa-sign-out-alt"></i></div>
+            <a href="admin.html" class="icon" onclick="handleLoginLogout()"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </nav>
 
@@ -184,6 +184,35 @@
             </ul>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = localStorage.getItem('userId'); // Get userId from localStorage
+
+            if (!localStorage.getItem('loginToken') || !userId) {
+                // If token or userId is missing, redirect the user to the login page
+                alert('Anda harus login terlebih dahulu.');
+                window.location.href = 'index.html'; // Adjust to your login page URL
+            }
+        });
+    </script>
+
+    <script>
+        function handleLoginLogout() {
+            // Tampilkan dialog konfirmasi
+            const isConfirmed = confirm('Yakin mau logout?');
+
+            if (isConfirmed) {
+                // Jika pengguna memilih "Ya", hapus token dan logout
+                localStorage.removeItem('loginToken');
+                localStorage.removeItem('userId'); // Optional: Hapus userId jika ada
+                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
+                window.location.href = 'login.html'; // Redirect ke halaman login
+            } else {
+                // Jika pengguna memilih "Tidak", batalkan logout
+                console.log('Logout dibatalkan.');
+            }
+        }
+    </script>
 
     <script>
         // Script untuk membuat grafik menggunakan library seperti Chart.js atau D3.js
