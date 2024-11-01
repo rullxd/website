@@ -61,76 +61,122 @@
     </section>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Fungsi untuk memuat menu dari server
-            function loadMenu() {
-                fetch('http://localhost:3000/menu')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            const menuTable = document.getElementById('menuTable').getElementsByTagName('tbody')[0];
-                            menuTable.innerHTML = ''; // Kosongkan tabel
-                            data.menu.forEach(item => {
-                                const row = menuTable.insertRow();
-                                row.innerHTML = `
-                                    <td>${item.name}</td>
-                                    <td>${item.category}</td>
-                                    <td>${item.description}</td>
-                                    <td>Rp ${item.price.toLocaleString()}</td>
-                                    <td><img src="${item.image_url}" alt="${item.name}" width="50"></td>
-                                    <td>
-                                        <button onclick="editMenu(${item.id})">Edit</button>
-                                        <button onclick="deleteMenu(${item.id})">Hapus</button>
-                                    </td>
-                                `;
-                            });
-                        }
-                    })
-                    .catch(error => console.error('Gagal memuat menu:', error));
-            }
+        // Fungsi untuk memuat menu, definisikan sebagai fungsi global agar bisa diakses di seluruh file
+        function loadMenu() {
+            const menuTable = document.getElementById('menuTable').getElementsByTagName('tbody')[0];
+            menuTable.innerHTML = '<tr><td colspan="6">Memuat data...</td></tr>'; // Pesan loading sementara
 
-
-            // Fungsi submit untuk menambah atau edit menu
-            document.getElementById('addMenuForm').addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                const editId = e.target.dataset.editId;
-                const newItem = {
-                    name: document.getElementById('name').value,
-                    category: document.getElementById('category').value,
-                    description: document.getElementById('description').value,
-                    price: parseFloat(document.getElementById('price').value),
-                    image_url: document.getElementById('image_url').value,
-                };
-
-                const url = editId ? `http://localhost:3000/menu/edit/${editId}` : 'http://localhost:3000/menu/add';
-                const method = editId ? 'PUT' : 'POST';
-
-                fetch(url, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(newItem),
+            fetch('http://localhost:3000/menu')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        menuTable.innerHTML = ''; // Hapus pesan loading
+                        data.menu.forEach(item => {
+                            const row = menuTable.insertRow();
+                            row.innerHTML = `
+                                <td>${item.name}</td>
+                                <td>${item.category}</td>
+                                <td>${item.description}</td>
+                                <td>Rp ${item.price.toLocaleString()}</td>
+                                <td><img src="${item.image_url}" alt="${item.name}" width="50"></td>
+                                <td>
+                                    <button onclick="editMenu(${item.id})">Edit</button>
+                                    <button onclick="deleteMenu(${item.id})">Hapus</button>
+                                </td>
+                            `;
+                        });
+                    }
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(editId ? 'Menu berhasil diedit' : 'Menu berhasil ditambahkan');
-                            loadMenu(); // Memuat ulang daftar menu
-                            e.target.reset();
-                            delete e.target.dataset.editId; // Hapus ID edit dari form
-                        } else {
-                            alert('Gagal menyimpan perubahan');
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
+                .catch(error => console.error('Gagal memuat menu:', error));
+        }
+        function editMenu(id) {
+            fetch(`http://localhost:3000/menu/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Gagal mengambil data menu');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('name').value = data.menu.name;
+                        document.getElementById('category').value = data.menu.category;
+                        document.getElementById('description').value = data.menu.description;
+                        document.getElementById('price').value = data.menu.price;
+                        document.getElementById('image_url').value = data.menu.image_url;
+
+                        // Set ID edit di form
+                        document.getElementById('addMenuForm').dataset.editId = id;
+                        // Scroll halaman ke atas setelah data diisi
+                        window.scrollTo(0, 0);
+                    } else {
+                        alert('Menu tidak ditemukan');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
 
 
-            loadMenu(); // Panggil fungsi untuk memuat menu saat halaman dimuat
+
+        // Fungsi untuk menghapus menu
+        function deleteMenu(id) {
+            fetch(`http://localhost:3000/menu/${id}`, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Menu berhasil dihapus');
+                        loadMenu(); // Memuat ulang daftar menu setelah penghapusan
+                    } else {
+                        alert('Gagal menghapus menu');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        document.getElementById('addMenuForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const editId = e.target.dataset.editId;
+            const newItem = {
+                name: document.getElementById('name').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                price: parseFloat(document.getElementById('price').value),
+                image_url: document.getElementById('image_url').value,
+            };
+
+            const url = editId ? `http://localhost:3000/menu/edit/${editId}` : 'http://localhost:3000/menu/add';
+            const method = editId ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newItem),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(editId ? 'Menu berhasil diedit' : 'Menu berhasil ditambahkan');
+                        loadMenu(); // Memuat ulang daftar menu
+                        e.target.reset();
+                        delete e.target.dataset.editId; // Hapus ID edit dari form
+                    } else {
+                        alert('Gagal menyimpan perubahan');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
+
+
+        loadMenu(); // Panggil fungsi untuk memuat menu saat halaman dimuat
     </script>
+
+
+
 </body>
 
 </html>

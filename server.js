@@ -62,6 +62,55 @@ app.post('/menu/add', (req, res) => {
         res.json({ success: true, message: 'Menu berhasil ditambahkan' });
     });
 });
+app.delete('/menu/:id', (req, res) => {
+    const menuId = req.params.id;
+    const query = 'DELETE FROM menu_items WHERE id = ?';
+
+    db.query(query, [menuId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal menghapus menu' });
+        }
+        res.json({ success: true, message: 'Menu berhasil dihapus' });
+    });
+});
+
+// Endpoint untuk mengupdate menu yang ada
+// Endpoint untuk mendapatkan data satu item menu berdasarkan ID
+app.get('/menu/:id', (req, res) => {
+    const menuId = req.params.id;
+    const query = 'SELECT * FROM menu_items WHERE id = ?';
+
+    db.query(query, [menuId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal mengambil data menu' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'Menu tidak ditemukan' });
+        }
+        res.json({ success: true, menu: results[0] });
+    });
+});
+app.put('/menu/edit/:id', (req, res) => {
+    const menuId = req.params.id;
+    const { name, category, description, price, image_url } = req.body;
+
+    const query = `
+        UPDATE menu_items 
+        SET name = ?, category = ?, description = ?, price = ?, image_url = ?
+        WHERE id = ?
+    `;
+
+    db.query(query, [name, category, description, price, image_url, menuId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal mengupdate menu' });
+        }
+        res.json({ success: true, message: 'Menu berhasil diupdate' });
+    });
+});
+
+
+
+
 
 // Endpoint untuk registrasi
 app.post('/register', (req, res) => {
