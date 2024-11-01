@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Kelola Menu</title>
+    <link rel="stylesheet" href="css/admin_menu.css">
+    <script defer src="js/admin_menu.js"></script>
+</head>
+
+<body>
+    <h1>Kelola Menu Restoran</h1>
+
+    <!-- Form Tambah Item Menu -->
+    <section>
+        <h2>Tambah Menu Baru</h2>
+        <form id="addMenuForm">
+            <label for="name">Nama:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="category">Kategori:</label>
+            <select id="category" name="category" required>
+                <option value="Makanan Pembuka">Makanan Pembuka</option>
+                <option value="Makanan Utama">Makanan Utama</option>
+                <option value="Hidangan Penutup">Hidangan Penutup</option>
+                <option value="Minuman">Minuman</option>
+            </select>
+
+            <label for="description">Deskripsi:</label>
+            <textarea id="description" name="description" required></textarea>
+
+            <label for="price">Harga:</label>
+            <input type="number" id="price" name="price" required>
+
+            <label for="image_url">URL Gambar:</label>
+            <input type="url" id="image_url" name="image_url" required>
+
+            <button type="submit">Tambah Menu</button>
+        </form>
+    </section>
+
+    <!-- Tabel Menu yang Ada -->
+    <section>
+        <h2>Daftar Menu</h2>
+        <table id="menuTable">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Kategori</th>
+                    <th>Deskripsi</th>
+                    <th>Harga</th>
+                    <th>Gambar</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data menu akan dimuat di sini -->
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fungsi untuk memuat menu dari server
+            function loadMenu() {
+                fetch('http://localhost:3000/menu')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const menuTable = document.getElementById('menuTable').getElementsByTagName('tbody')[0];
+                            menuTable.innerHTML = ''; // Kosongkan tabel
+                            data.menu.forEach(item => {
+                                const row = menuTable.insertRow();
+                                row.innerHTML = `
+                                    <td>${item.name}</td>
+                                    <td>${item.category}</td>
+                                    <td>${item.description}</td>
+                                    <td>Rp ${item.price.toLocaleString()}</td>
+                                    <td><img src="${item.image_url}" alt="${item.name}" width="50"></td>
+                                    <td>
+                                        <button onclick="editMenu(${item.id})">Edit</button>
+                                        <button onclick="deleteMenu(${item.id})">Hapus</button>
+                                    </td>
+                                `;
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Gagal memuat menu:', error));
+            }
+
+
+            // Fungsi submit untuk menambah atau edit menu
+            document.getElementById('addMenuForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const editId = e.target.dataset.editId;
+                const newItem = {
+                    name: document.getElementById('name').value,
+                    category: document.getElementById('category').value,
+                    description: document.getElementById('description').value,
+                    price: parseFloat(document.getElementById('price').value),
+                    image_url: document.getElementById('image_url').value,
+                };
+
+                const url = editId ? `http://localhost:3000/menu/edit/${editId}` : 'http://localhost:3000/menu/add';
+                const method = editId ? 'PUT' : 'POST';
+
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newItem),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(editId ? 'Menu berhasil diedit' : 'Menu berhasil ditambahkan');
+                            loadMenu(); // Memuat ulang daftar menu
+                            e.target.reset();
+                            delete e.target.dataset.editId; // Hapus ID edit dari form
+                        } else {
+                            alert('Gagal menyimpan perubahan');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+
+            loadMenu(); // Panggil fungsi untuk memuat menu saat halaman dimuat
+        });
+    </script>
+</body>
+
+</html>

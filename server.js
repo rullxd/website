@@ -13,7 +13,21 @@ app.use(cors());
 
 // Middleware untuk parsing JSON dalam permintaan
 app.use(express.json());
-
+// Konfigurasi koneksi MySQL
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root', // Ganti dengan username MySQL Anda
+    password: 'Ramadani1410', // Ganti dengan password MySQL Anda
+    database: 'login_app' // Nama database Anda
+});
+// Coba koneksi ke database
+db.connect((err) => {
+    if (err) {
+        console.error('Error connecting to MySQL:', err);
+    } else {
+        console.log('Connected to MySQL');
+    }
+});
 // Konfigurasi penyimpanan multer untuk menyimpan file foto profil
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -26,23 +40,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-// Konfigurasi koneksi MySQL
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root', // Ganti dengan username MySQL Anda
-    password: 'Ramadani1410', // Ganti dengan password MySQL Anda
-    database: 'login_app' // Nama database Anda
-});
-
-// Coba koneksi ke database
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-    } else {
-        console.log('Connected to MySQL');
-    }
-});
-
 app.get('/menu', (req, res) => {
     const query = 'SELECT * FROM menu_items';
     db.query(query, (err, results) => {
@@ -50,6 +47,19 @@ app.get('/menu', (req, res) => {
             return res.status(500).json({ success: false, message: 'Gagal mengambil data menu' });
         }
         res.json({ success: true, menu: results });
+    });
+});
+
+// Endpoint untuk menambah menu baru
+app.post('/menu/add', (req, res) => {
+    const { name, category, description, price, image_url } = req.body;
+
+    const query = 'INSERT INTO menu_items (name, category, description, price, image_url) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [name, category, description, price, image_url], (err, result) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal menambahkan menu' });
+        }
+        res.json({ success: true, message: 'Menu berhasil ditambahkan' });
     });
 });
 
