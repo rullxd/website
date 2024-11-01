@@ -126,7 +126,7 @@
                         <div class="menu-title">${item.name}</div>
                         <p class="menu-description">${item.description}</p>
                         <div class="menu-price">Rp ${item.price.toLocaleString()}</div>
-                        <a href="#" class="order-btn" onclick="addToCart('${item.name}', 'Rp ${item.price.toLocaleString()}', '${item.image_url}', event)">Pesan Sekarang</a>
+                        <a href="javascript:void(0);" class="order-btn" onclick="addToCart('${item.name}', 'Rp ${item.price.toLocaleString()}', '${item.image_url}', event)">Pesan Sekarang</a>
                     `;
                         categoryGrid.appendChild(menuCard);
                     });
