@@ -206,9 +206,21 @@
             } else {
                 html.setAttribute('data-theme', 'dark');
             }
-
             localStorage.setItem('theme', html.getAttribute('data-theme') || 'light');
         }
+        // Fungsi untuk memuat tema yang tersimpan
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        }
+        // Panggil loadSavedTheme saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
+    <script>
+
+
 
         document.addEventListener('DOMContentLoaded', () => {
             const loginLogoutButton = document.getElementById('loginLogoutButton');
