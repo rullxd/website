@@ -179,7 +179,7 @@
             if (data.userId !== undefined) { // Cek apakah userId ada
               localStorage.setItem('userId', data.userId);
               localStorage.setItem('loginToken', data.token);
-              localStorage.setItem('userRole', 'admin');
+              localStorage.setItem('userRole', data.role);
               alert(`Selamat datang, ${data.role === 'admin' ? 'Admin' : 'Customer'}!`);
               window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
             } else {
