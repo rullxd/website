@@ -116,7 +116,7 @@ app.put('/menu/edit/:id', (req, res) => {
 
 // Endpoint untuk registrasi
 app.post('/register', (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
     const role = 'customer'; // Set default role sebagai customer
 
     // Hash password sebelum menyimpannya ke database
@@ -127,9 +127,9 @@ app.post('/register', (req, res) => {
             return;
         }
 
-        // Query untuk menambahkan pengguna baru ke database
-        const query = 'INSERT INTO users (username, password, role) VALUES (?, ?, ?)';
-        db.query(query, [username, hashedPassword, role], (err, result) => {
+        // Query untuk menambahkan pengguna baru ke database dengan email
+        const query = 'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)';
+        db.query(query, [username, hashedPassword, email, role], (err, result) => {
             if (err) {
                 console.error('Error inserting user:', err);
                 res.status(500).json({ success: false, message: 'Gagal membuat akun' });
@@ -139,6 +139,7 @@ app.post('/register', (req, res) => {
         });
     });
 });
+
 let verificationCode = Math.floor(100000 + Math.random() * 900000); // Kode 6 digit acak
 
 // Konfigurasi transporter Nodemailer
