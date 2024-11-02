@@ -1,43 +1,141 @@
-/* Sidebar Styling */
-.sidebar {
-    width: 200px;
-    position: fixed;
-    height: 100%;
-    background-color: var(--primary-color);
-    padding-top: 20px;
+/* Reservation Page Styling */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.sidebar h2 {
-    color: #fff;
+:root {
+    --primary-color: #e74c3c;
+    --primary-color-dark: #c0392b;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --heading-color: #2c3e50;
+    --background-primary: #fff;
+    --background-secondary: #f9f9f9;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hover-background: rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-primary);
+    color: var(--text-primary);
+    padding: 20px;
+}
+
+h1 {
     text-align: center;
+    color: var(--heading-color);
+    font-size: 2rem;
     margin-bottom: 20px;
 }
 
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
+/* Updated Table Styles for Reservation Page */
+table {
+    width: 100%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.95rem;
 }
 
-.sidebar ul li {
-    padding: 10px;
-    text-align: center;
-}
-
-.sidebar ul li a {
+table thead {
+    background-color: var(--primary-color);
     color: #fff;
-    text-decoration: none;
-    display: block;
     font-weight: bold;
+    font-size: 1rem;
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    /* Adjusted padding for a compact look */
+    border-bottom: 1px solid var(--shadow-color);
+    text-align: left;
+    white-space: nowrap;
+    /* Prevents cell text from wrapping */
+}
+
+table th {
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+table tbody tr {
     transition: background-color 0.3s;
 }
 
-.sidebar ul li a:hover {
+table tbody tr:nth-child(even) {
+    background-color: var(--background-secondary);
+}
+
+table tbody tr:hover {
+    background-color: var(--hover-background);
+}
+
+table tbody td {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+table tbody td select,
+table tbody td button {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.update-status {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    transition: background-color 0.3s;
+}
+
+button.update-status:hover {
     background-color: var(--primary-color-dark);
 }
 
-/* Konten Utama */
-.main-content {
-    margin-left: 220px;
-    /* Sesuaikan dengan lebar sidebar */
-    padding: 20px;
+@media (max-width: 768px) {
+
+    /* Responsive Adjustments */
+    table {
+        font-size: 0.85rem;
+    }
+
+    table thead {
+        display: none;
+    }
+
+    table tbody td {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    table tbody td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-right: 10px;
+        color: var(--text-primary);
+        display: inline-block;
+    }
+
+    table tbody tr {
+        margin-bottom: 15px;
+        display: block;
+        box-shadow: 0 2px 4px var(--shadow-color);
+    }
 }
