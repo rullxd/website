@@ -109,6 +109,15 @@
     <h1>Registrasi</h1>
     <form id="registerForm" onsubmit="return false;">
       <div class="input-group">
+        <input type="email" id="email" placeholder="Email" required>
+      </div>
+      <div class="input-group">
+        <button type="button" onclick="sendVerificationCode()">Kirim Kode</button>
+      </div>
+      <div class="input-group">
+        <input type="text" id="verificationCode" placeholder="Masukkan Kode Verifikasi" required>
+      </div>
+      <div class="input-group">
         <input type="text" id="newUsername" placeholder="Username" required>
       </div>
       <div class="input-group">
@@ -120,6 +129,7 @@
         <i class="fas fa-eye toggle-password" onclick="togglePassword('confirmPassword', this)"></i>
       </div>
       <button type="button" onclick="register()">Daftar</button>
+
     </form>
 
     <div class="login-link">
@@ -128,33 +138,93 @@
   </div>
 
   <script>
+    function sendVerificationCode() {
+      const email = document.getElementById("email").value;
+
+      if (!email) {
+        alert("Silakan masukkan email Anda.");
+        return;
+      }
+
+      fetch('http://localhost:3000/sendVerificationCode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Kode verifikasi telah dikirim ke email Anda.');
+          } else {
+            alert('Gagal mengirim kode verifikasi: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    // Fungsi untuk mengirim email verifikasi
+    function sendVerificationEmail(email, verificationCode, res) {
+      const mailOptions = {
+        from: 'your-email@gmail.com',
+        to: email,
+        subject: 'Kode Verifikasi Anda',
+        text: `Kode verifikasi Anda adalah: ${verificationCode}`
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({ success: false, message: 'Gagal mengirim email' });
+        }
+        console.log('Email terkirim: ' + info.response);
+        res.json({ success: true, message: 'Kode verifikasi terkirim' });
+      });
+    }
+
     function register() {
       const username = document.getElementById("newUsername").value;
       const password = document.getElementById("newPassword").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
+      const email = document.getElementById("email").value;
+      const verificationCode = document.getElementById("verificationCode").value;
 
       if (password !== confirmPassword) {
         alert('Password dan Konfirmasi Password tidak cocok.');
         return;
       }
 
-      // Kirim data pengguna ke server untuk disimpan di database
-      fetch('http://localhost:3000/register', {
+      // Memverifikasi kode terlebih dahulu
+      fetch('http://localhost:3000/verifyCode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, role: 'customer' })
+        body: JSON.stringify({ email, verificationCode })
       })
+
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            alert('Akun berhasil dibuat! Silakan login.');
-            window.location.href = 'login.html'; // Redirect ke halaman login
+            // Jika verifikasi sukses, lanjutkan proses registrasi
+            fetch('http://localhost:3000/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, password, email, role: 'customer' })
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  alert('Akun berhasil dibuat! Silakan login.');
+                  window.location.href = 'login.html';
+                } else {
+                  alert('Registrasi gagal: ' + data.message);
+                }
+              })
+              .catch(error => console.error('Error:', error));
           } else {
-            alert('Registrasi gagal: ' + data.message);
+            alert('Kode verifikasi salah atau tidak valid.');
           }
         })
         .catch(error => console.error('Error:', error));
     }
+
 
     // Fitur Toggle Password
     function togglePassword(fieldId, icon) {

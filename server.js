@@ -5,6 +5,7 @@ const mysql = require('mysql'); // Paket untuk koneksi MySQL
 const bcrypt = require('bcrypt'); // Paket untuk hashing password
 const multer = require('multer'); // Untuk mengunggah file
 const path = require('path'); // Untuk manipulasi path
+const nodemailer = require('nodemailer');
 // Inisialisasi aplikasi Express
 const app = express();
 
@@ -138,6 +139,101 @@ app.post('/register', (req, res) => {
         });
     });
 });
+let verificationCode = Math.floor(100000 + Math.random() * 900000); // Kode 6 digit acak
+
+// Konfigurasi transporter Nodemailer
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'sahtulbb@gmail.com',      // Ganti dengan email Anda
+        pass: 'wzjw totv zqxw uzfm'          // Ganti dengan password aplikasi atau kata sandi
+    }
+});
+
+// Endpoint untuk mengirim kode verifikasi
+app.post('/sendVerificationCode', (req, res) => {
+    const { email } = req.body;
+    const verificationCode = Math.floor(100000 + Math.random() * 900000); // Menghasilkan kode verifikasi 6 digit
+
+    // Cek apakah email sudah ada di temp_users
+    const checkQuery = 'SELECT * FROM temp_users WHERE email = ?';
+    db.query(checkQuery, [email], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Gagal memeriksa email' });
+        }
+
+        if (results.length > 0) {
+            // Jika email sudah ada, update kode verifikasi
+            const updateQuery = 'UPDATE temp_users SET verification_code = ? WHERE email = ?';
+            db.query(updateQuery, [verificationCode, email], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ success: false, message: 'Gagal memperbarui kode verifikasi' });
+                }
+                sendVerificationEmail(email, verificationCode, res); // Fungsi untuk mengirim email
+            });
+        } else {
+            // Jika email belum ada, insert data baru
+            const insertQuery = 'INSERT INTO temp_users (email, verification_code) VALUES (?, ?)';
+            db.query(insertQuery, [email, verificationCode], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ success: false, message: 'Gagal menyimpan data' });
+                }
+                sendVerificationEmail(email, verificationCode, res); // Fungsi untuk mengirim email
+            });
+        }
+    });
+});
+// Fungsi untuk mengirim email verifikasi
+function sendVerificationEmail(email, verificationCode, res) {
+    const mailOptions = {
+        from: 'your-email@gmail.com',
+        to: email,
+        subject: 'Kode Verifikasi Anda',
+        text: `Kode verifikasi Anda adalah: ${verificationCode}`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, message: 'Gagal mengirim email' });
+        }
+        console.log('Email terkirim: ' + info.response);
+        res.json({ success: true, message: 'Kode verifikasi terkirim' });
+    });
+}
+
+
+app.post('/verifyCode', (req, res) => {
+    const { email, verificationCode } = req.body;
+
+    // Query ke database untuk mengambil kode verifikasi berdasarkan email
+    const query = 'SELECT verification_code FROM temp_users WHERE email = ?';
+    db.query(query, [email], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Terjadi kesalahan pada server.' });
+        }
+
+        if (results.length === 0) {
+            return res.json({ success: false, message: 'Email tidak ditemukan di database.' });
+        }
+
+        // Ambil kode verifikasi dari hasil query dan bandingkan
+        const storedCode = results[0].verification_code;
+        if (storedCode === verificationCode) {
+            res.json({ success: true, message: 'Kode verifikasi sesuai' });
+        } else {
+            res.json({ success: false, message: 'Kode verifikasi salah atau tidak valid.' });
+        }
+    });
+});
+
+
+
+
 
 // Endpoint untuk login
 app.post('/login', (req, res) => {
