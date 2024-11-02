@@ -41,18 +41,3 @@
     /* Sesuaikan dengan lebar sidebar */
     padding: 20px;
 }
-
-.status-pending {
-    color: yellow;
-    font-weight: bold;
-}
-
-.status-canceled {
-    color: red;
-    font-weight: bold;
-}
-
-.status-confirmed {
-    color: green;
-    font-weight: bold;
-}
