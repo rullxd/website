@@ -23,7 +23,6 @@
                 <a href="review_makanan.html">Review</a>
             </div>
             <div class="user-section">
-                <!-- User Icon -->
                 <div class="user-icon" onclick="toggleSidebar()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -37,7 +36,6 @@
 
     <div class="overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Menu Pengguna</h2>
@@ -62,66 +60,16 @@
     </div>
 
     <div class="reservation-container">
-        <div class="header">Paket Reservasi</div>
-
-        <div class="reservation-card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAOw5tyhvX90EVj8Cxj-MPXsPPARN3Pd_Aw&s"
-                alt="Gambar Paket 1" class="reservation-image">
-            <div class="reservation-content">
-                <div class="reservation-title">Paket Makan Siang Romantis</div>
-                <div class="reservation-description">Nikmati momen spesial dengan pasangan dalam suasana romantis. Paket
-                    ini mencakup hidangan lengkap mulai dari pembuka hingga penutup.</div>
-                <div class="price">Rp 500.000</div>
-                <button class="reserve-btn">Reservasi Sekarang</button>
-            </div>
-        </div>
-
-        <div class="reservation-card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAOw5tyhvX90EVj8Cxj-MPXsPPARN3Pd_Aw&s"
-                alt="Gambar Paket 2" class="reservation-image">
-            <div class="reservation-content">
-                <div class="reservation-title">Paket Keluarga</div>
-                <div class="reservation-description">Cocok untuk makan bersama keluarga besar, termasuk menu spesial
-                    untuk
-                    anak-anak dan orang tua.</div>
-                <div class="price">Rp 1.200.000</div>
-                <button class="reserve-btn">Reservasi Sekarang</button>
-            </div>
-        </div>
-
-        <div class="reservation-card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAOw5tyhvX90EVj8Cxj-MPXsPPARN3Pd_Aw&s"
-                alt="Gambar Paket 3" class="reservation-image">
-            <div class="reservation-content">
-                <div class="reservation-title">Paket Perayaan Ulang Tahun</div>
-                <div class="reservation-description">Rayakan ulang tahun dengan dekorasi dan kue spesial dari kami.
-                    Paket
-                    ini termasuk hidangan lengkap untuk 10 orang.</div>
-                <div class="price">Rp 1.800.000</div>
-                <button class="reserve-btn">Reservasi Sekarang</button>
-            </div>
-        </div>
-
-        <div class="reservation-card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHAOw5tyhvX90EVj8Cxj-MPXsPPARN3Pd_Aw&s"
-                alt="Gambar Paket 4" class="reservation-image">
-            <div class="reservation-content">
-                <div class="reservation-title">Paket Meeting Bisnis</div>
-                <div class="reservation-description">Paket eksklusif untuk pertemuan bisnis, termasuk akses ke ruang
-                    rapat
-                    dan layanan makanan ringan.</div>
-                <div class="price">Rp 700.000</div>
-                <button class="reserve-btn">Reservasi Sekarang</button>
-            </div>
-        </div>
+        <h1 class="header">Paket Reservasi</h1>
+        <!-- Paket reservasi akan dimuat di sini secara dinamis -->
     </div>
 
-    <!-- Modal Popup untuk Reservasi -->
+    <!-- Modal Popup untuk Formulir Reservasi -->
     <div id="reservationModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
             <h3>Formulir Reservasi</h3>
-            <form action="/reservasi" method="post">
+            <form id="reservationForm" onsubmit="submitReservation(event)">
                 <label for="name">Nama Lengkap:</label>
                 <input type="text" id="name" name="name" placeholder="Nama Anda" required>
 
@@ -137,19 +85,100 @@
                 <label for="time">Jam Reservasi:</label>
                 <input type="time" id="time" name="time" required>
 
-                <label for="package">Pilih Paket:</label>
-                <select id="package" name="package">
-                    <option value="sarapan">Paket Sarapan Keluarga</option>
-                    <option value="romantis">Paket Malam Romantis</option>
-                    <option value="gathering">Paket Gathering Perusahaan</option>
-                </select>
+                <label for="package">Paket yang Dipilih:</label>
+                <input type="text" id="package" name="package" readonly>
 
                 <button type="submit" class="reserve-btn" style="width: 100%; margin-top: 15px;">Kirim
                     Reservasi</button>
             </form>
         </div>
     </div>
+
     <script>
+        // Ambil data paket reservasi dari server
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('http://localhost:3000/reservation-packages')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayReservationPackages(data.packages);
+                    } else {
+                        alert('Gagal memuat paket reservasi.');
+                    }
+                })
+                .catch(error => console.error('Error fetching reservation packages:', error));
+        });
+
+        // Fungsi untuk menampilkan paket reservasi
+        function displayReservationPackages(packages) {
+            const container = document.querySelector('.reservation-container');
+            container.innerHTML = ''; // Kosongkan kontainer sebelum ditampilkan
+
+            packages.forEach(package => {
+                const packageCard = document.createElement('div');
+                packageCard.className = 'reservation-card';
+                packageCard.innerHTML = `
+                    <img src="${package.image_url}" alt="Gambar Paket" class="reservation-image">
+                    <div class="reservation-content">
+                        <div class="reservation-title">${package.package_name}</div>
+                        <div class="reservation-description">${package.description}</div>
+                        <div class="price">Rp ${parseInt(package.price).toLocaleString()}</div>
+                        <button class="reserve-btn" onclick="openReservationModal('${package.package_name}', ${package.price})">Reservasi Sekarang</button>
+                    </div>
+                `;
+                container.appendChild(packageCard);
+            });
+        }
+
+        // Buka modal reservasi dengan paket yang dipilih
+        function openReservationModal(packageName, packagePrice) {
+            const modal = document.getElementById("reservationModal");
+            modal.style.display = "block";
+            document.getElementById("package").value = packageName;
+        }
+
+        // Tutup modal
+        function closeModal() {
+            document.getElementById("reservationModal").style.display = "none";
+        }
+
+        // Fungsi untuk mengirim data reservasi ke server
+        function submitReservation(event) {
+            event.preventDefault();
+
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Silakan login terlebih dahulu');
+                return;
+            }
+
+            const formData = {
+                user_id: userId,
+                package_name: document.getElementById('package').value,
+                reservation_date: document.getElementById('date').value,
+                reservation_time: document.getElementById('time').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value
+            };
+
+            fetch('http://localhost:3000/reservasi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Reservasi berhasil dibuat!');
+                        closeModal();
+                    } else {
+                        alert('Gagal membuat reservasi.');
+                    }
+                })
+                .catch(error => console.error('Error submitting reservation:', error));
+        }
+
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.querySelector('.overlay');
@@ -158,7 +187,6 @@
             overlay.classList.toggle('active');
         }
 
-        // Close sidebar when clicking outside
         document.addEventListener('click', function (event) {
             const sidebar = document.querySelector('.sidebar');
             const userIcon = document.querySelector('.user-icon');
@@ -168,29 +196,7 @@
                 document.querySelector('.overlay').classList.remove('active');
             }
         });
-    </script>
-    <script>
-        // Ambil elemen modal dan tombol close
-        var modal = document.getElementById("reservationModal");
-        var closeBtn = document.getElementsByClassName("close-btn")[0];
 
-        // Fungsi untuk membuka modal
-        document.querySelectorAll('.reserve-btn').forEach(button => {
-            button.onclick = function () {
-                modal.style.display = "block";
-            }
-        });
-
-        // Tutup modal jika pengguna mengklik area di luar modal
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
-
-    <script>
-        // Fungsi untuk mengubah tema
         function toggleTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
@@ -201,33 +207,16 @@
                 html.setAttribute('data-theme', 'dark');
             }
 
-            // Simpan preferensi tema ke localStorage
             localStorage.setItem('theme', html.getAttribute('data-theme') || 'light');
         }
-
-        // Fungsi untuk memuat tema yang tersimpan
-        function loadSavedTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            }
-        }
-
-        // Panggil loadSavedTheme saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', loadSavedTheme);
-    </script>
-    <script>
 
         document.addEventListener('DOMContentLoaded', () => {
             const loginLogoutButton = document.getElementById('loginLogoutButton');
 
-            // Cek token login
             if (localStorage.getItem('loginToken')) {
-                // Jika token ada, ubah menjadi Logout
                 loginLogoutButton.textContent = 'Logout';
                 loginLogoutButton.href = 'index.html';
             } else {
-                // Jika token tidak ada, tetap sebagai Login
                 loginLogoutButton.textContent = 'Login';
                 loginLogoutButton.href = 'login.html';
             }
@@ -235,18 +224,12 @@
 
         function handleLoginLogout() {
             if (localStorage.getItem('loginToken')) {
-                // Jika sudah login, hapus token untuk logout
                 localStorage.removeItem('loginToken');
-                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
                 window.location.href = 'login.html';
             } else {
-                console.log('Token tidak ditemukan. Pengguna belum login.');
-                // Jika belum login, redirect ke halaman login
                 window.location.href = 'login.html';
             }
         }
-
-
     </script>
 
 </body>

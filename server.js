@@ -301,6 +301,33 @@ app.delete('/cart/remove', (req, res) => {
     });
 });
 
+app.post('/reservasi', (req, res) => {
+    const { user_id, package_name, reservation_date, reservation_time, name, email, phone } = req.body;
+
+    const query = `
+        INSERT INTO reservations (user_id, package_name, reservation_date, reservation_time, name, email, phone)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.query(query, [user_id, package_name, reservation_date, reservation_time, name, email, phone], (err, result) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal membuat reservasi' });
+        }
+        res.json({ success: true, message: 'Reservasi berhasil dibuat' });
+    });
+});
+
+app.get('/reservation-packages', (req, res) => {
+    const query = 'SELECT * FROM reservation_packages';
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal mengambil paket reservasi' });
+        }
+        res.json({ success: true, packages: results });
+    });
+});
+
+
 // Menjalankan server di port 3000
 app.listen(3000, () => {
     console.log('Server running on port 3000');
