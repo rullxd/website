@@ -127,15 +127,14 @@ app.post('/register', (req, res) => {
             return;
         }
 
-        // Query untuk menambahkan pengguna baru ke database dengan email
-        const query = 'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)';
-        db.query(query, [username, hashedPassword, email, role], (err, result) => {
-            if (err) {
-                console.error('Error inserting user:', err);
-                res.status(500).json({ success: false, message: 'Gagal membuat akun' });
-            } else {
-                res.json({ success: true, message: 'Akun berhasil dibuat' });
+        // Jika registrasi berhasil, hapus data dari temp_users
+        const deleteQuery = 'DELETE FROM temp_users WHERE email = ?';
+        db.query(deleteQuery, [email], (deleteErr, deleteResult) => {
+            if (deleteErr) {
+                console.error('Error deleting temp user:', deleteErr);
+                return res.status(500).json({ success: false, message: 'Registrasi berhasil, tetapi gagal menghapus data sementara' });
             }
+            res.json({ success: true, message: 'Akun berhasil dibuat dan data sementara dihapus' });
         });
     });
 });
@@ -192,10 +191,22 @@ function sendVerificationEmail(email, verificationCode, res) {
     const mailOptions = {
         from: 'your-email@gmail.com',
         to: email,
-        subject: 'Kode Verifikasi Anda',
-        text: `Kode verifikasi Anda adalah: ${verificationCode}`
+        subject: 'Verifikasi Akun Anda - Kode Registrasi',
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+                <h2 style="color: #007bff;">Selamat Datang di Aplikasi Kami!</h2>
+                <p>Halo,</p>
+                <p>Terima kasih telah mendaftar. Untuk menyelesaikan proses registrasi, mohon masukkan kode verifikasi berikut:</p>
+                <h3 style="color: #007bff; text-align: center;">${verificationCode}</h3>
+                <p>Masukkan kode ini di halaman registrasi untuk memverifikasi akun Anda. Kode ini berlaku selama 10 menit.</p>
+                <p>Jika Anda tidak merasa mendaftar di aplikasi ini, abaikan saja email ini.</p>
+                <br>
+                <p>Salam hangat,<br>Tim Registrasi Kami</p>
+                <hr>
+                <small style="color: #555;">Email ini dikirim secara otomatis, mohon tidak membalas langsung.</small>
+            </div>
+        `
     };
-
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log(error);

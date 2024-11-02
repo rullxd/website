@@ -70,23 +70,7 @@
         .catch(error => console.error('Error:', error));
     }
     // Fungsi untuk mengirim email verifikasi
-    function sendVerificationEmail(email, verificationCode, res) {
-      const mailOptions = {
-        from: 'your-email@gmail.com',
-        to: email,
-        subject: 'Kode Verifikasi Anda',
-        text: `Kode verifikasi Anda adalah: ${verificationCode}`
-      };
 
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log(error);
-          return res.status(500).json({ success: false, message: 'Gagal mengirim email' });
-        }
-        console.log('Email terkirim: ' + info.response);
-        res.json({ success: true, message: 'Kode verifikasi terkirim' });
-      });
-    }
 
     function register() {
       const username = document.getElementById("newUsername").value;
