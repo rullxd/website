@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservasi Saya</title>
+    <link rel="stylesheet" href="css/reservasi_user.css">
+</head>
+
+<body>
+    <h1 class="header">Detail Reservasi Saya</h1>
+
+    <div class="reservation-details">
+        <table id="reservationTable">
+            <thead>
+                <tr>
+                    <th>Paket</th>
+                    <th>Tanggal</th>
+                    <th>Waktu</th>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>Telepon</th>
+                    <th>Status</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data akan dimuat di sini -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = localStorage.getItem('userId'); // Ambil userId dari localStorage
+
+            if (!localStorage.getItem('loginToken') || !userId) {
+                // Jika token tidak ada, arahkan pengguna ke halaman login
+                alert('Anda harus login terlebih dahulu.');
+                window.location.href = 'index.html';
+            }
+            loadUserProfile(userId);
+        });
+        // Fetch user ID from local storage or URL query parameter
+        const userId = localStorage.getItem('userId');
+
+        if (userId) {
+            // Fetch reservation details for the user
+            fetch(`http://localhost:3000/reservations/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayReservations(data.reservations);
+                    } else {
+                        alert('Gagal memuat reservasi Anda.');
+                    }
+                })
+                .catch(error => console.error('Error fetching reservations:', error));
+        }
+
+        // Format date to a more readable format
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        // Display reservations in the table
+        function displayReservations(reservations) {
+            const tableBody = document.getElementById('reservationTable').querySelector('tbody');
+            tableBody.innerHTML = ''; // Clear previous content
+
+            reservations.forEach(reservation => {
+                const row = document.createElement('tr');
+                let statusClass = '';
+
+                // Set class based on reservation status
+                if (reservation.status === 'Pending') {
+                    statusClass = 'status-pending';
+                } else if (reservation.status === 'Cancelled') {
+                    statusClass = 'status-canceled';
+                } else if (reservation.status === 'Confirmed') {
+                    statusClass = 'status-confirmed';
+                }
+                row.innerHTML = `
+            <td>${reservation.package_name}</td>
+            <td>${formatDate(reservation.reservation_date)}</td>
+            <td>${reservation.reservation_time}</td>
+            <td>${reservation.name}</td>
+            <td>${reservation.email}</td>
+            <td>${reservation.phone}</td>
+            <td>${reservation.status}</td>
+        `;
+                tableBody.appendChild(row);
+            });
+        }
+
+    </script>
+</body>
+
+</html>

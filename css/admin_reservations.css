@@ -1,0 +1,58 @@
+/* Sidebar Styling */
+.sidebar {
+    width: 200px;
+    position: fixed;
+    height: 100%;
+    background-color: var(--primary-color);
+    padding-top: 20px;
+}
+
+.sidebar h2 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: var(--primary-color-dark);
+}
+
+/* Konten Utama */
+.main-content {
+    margin-left: 220px;
+    /* Sesuaikan dengan lebar sidebar */
+    padding: 20px;
+}
+
+.status-pending {
+    color: yellow;
+    font-weight: bold;
+}
+
+.status-canceled {
+    color: red;
+    font-weight: bold;
+}
+
+.status-confirmed {
+    color: green;
+    font-weight: bold;
+}

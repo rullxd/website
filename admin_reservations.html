@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Reservasi</title>
+</head>
+
+<body>
+    <h1>Daftar Reservasi</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ID User</th>
+                <th>Nama Paket</th>
+                <th>Tanggal Reservasi</th>
+                <th>Waktu Reservasi</th>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Telepon</th>
+                <th>Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody id="reservation-list">
+            <!-- Data reservasi akan ditampilkan di sini -->
+        </tbody>
+    </table>
+
+    <script>
+        // Fungsi untuk mengambil data reservasi
+        async function fetchReservations() {
+            try {
+                const response = await fetch('http://localhost:3000/reservations');
+                const data = await response.json();
+
+                if (data.success) {
+                    const reservations = data.reservations;
+                    const tableBody = document.getElementById('reservation-list');
+
+                    reservations.forEach(reservation => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${reservation.id}</td>
+                            <td>${reservation.user_id}</td>
+                            <td>${reservation.package_name}</td>
+                            <td>${reservation.reservation_date}</td>
+                            <td>${reservation.reservation_time}</td>
+                            <td>${reservation.name}</td>
+                            <td>${reservation.email}</td>
+                            <td>${reservation.phone}</td>
+                            <td id="status-${reservation.id}">${reservation.status || 'Pending'}</td>
+                            <td>
+                                <select id="status-select-${reservation.id}">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                                <button onclick="updateStatus(${reservation.id})">Update</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    alert('Gagal mengambil data reservasi');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengambil data reservasi');
+            }
+        }
+
+        // Fungsi untuk memperbarui status reservasi
+        async function updateStatus(reservationId) {
+            const statusSelect = document.getElementById(`status-select-${reservationId}`);
+            const newStatus = statusSelect.value;
+
+            try {
+                const response = await fetch(`http://localhost:3000/reservations/${reservationId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById(`status-${reservationId}`).innerText = newStatus;
+                    alert('Status berhasil diperbarui');
+                } else {
+                    alert('Gagal memperbarui status');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memperbarui status');
+            }
+        }
+
+        // Memanggil fungsi fetchReservations ketika halaman dimuat
+        window.onload = fetchReservations;
+    </script>
+</body>
+
+</html>

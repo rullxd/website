@@ -62,6 +62,7 @@ app.post('/menu/add', (req, res) => {
         res.json({ success: true, message: 'Menu berhasil ditambahkan' });
     });
 });
+// Endpoint untuk menghapus menu
 app.delete('/menu/:id', (req, res) => {
     const menuId = req.params.id;
     const query = 'DELETE FROM menu_items WHERE id = ?';
@@ -324,6 +325,40 @@ app.get('/reservation-packages', (req, res) => {
             return res.status(500).json({ success: false, message: 'Gagal mengambil paket reservasi' });
         }
         res.json({ success: true, packages: results });
+    });
+});
+app.get('/reservations', (req, res) => {
+    const query = 'SELECT * FROM reservations';
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal mengambil data reservasi' });
+        }
+        res.json({ success: true, reservations: results });
+    });
+});
+
+// Endpoint to get reservations by user_id
+app.get('/reservations/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    const query = 'SELECT * FROM reservations WHERE user_id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Failed to fetch reservations' });
+        }
+        res.json({ success: true, reservations: results });
+    });
+});
+app.put('/reservations/:id/status', (req, res) => {
+    const reservationId = req.params.id;
+    const { status } = req.body;
+
+    const query = 'UPDATE reservations SET status = ? WHERE id = ?';
+    db.query(query, [status, reservationId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Failed to update status' });
+        }
+        res.json({ success: true, message: 'Status updated successfully' });
     });
 });
 
