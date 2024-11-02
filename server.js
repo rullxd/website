@@ -212,7 +212,6 @@ function sendVerificationEmail(email, verificationCode, res) {
             console.log(error);
             return res.status(500).json({ success: false, message: 'Gagal mengirim email' });
         }
-        console.log('Email terkirim: ' + info.response);
         res.json({ success: true, message: 'Kode verifikasi terkirim' });
     });
 }
