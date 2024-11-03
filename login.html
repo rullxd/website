@@ -93,23 +93,6 @@
       gap: 10px;
     }
 
-    .icon-container {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .icon-container i {
-      font-size: 24px;
-      cursor: pointer;
-      transition: color 0.3s;
-      color: #666;
-    }
-
-    .icon-container i:hover {
-      color: #e74c3c;
-    }
-
     .register-link {
       margin-top: 20px;
       color: #555;
@@ -144,11 +127,12 @@
 
     <div class="alt-login">
       <p>Atau login dengan:</p>
-      <div class="icon-container">
-        <i class="fab fa-google" onclick="loginWithGoogle()" title="Login dengan Google"></i>
-        <i class="fab fa-facebook" onclick="loginWithFacebook()" title="Login dengan Facebook"></i>
-        <i class="fab fa-apple" onclick="loginWithApple()" title="Login dengan Apple"></i>
+      <div id="g_id_onload" data-client_id="158123500330-rdcsku76df6tc8q8ubohmne58e5tgibn.apps.googleusercontent.com"
+        data-context="signin" data-callback="handleCredentialResponse" data-auto_prompt="false">
       </div>
+      <div class="g_id_signin" data-type="standard"></div>
+      <i class="fab fa-facebook" onclick="loginWithFacebook()" title="Login dengan Facebook"></i>
+      <i class="fab fa-apple" onclick="loginWithApple()" title="Login dengan Apple"></i>
     </div>
 
     <div class="register-link">
@@ -156,49 +140,8 @@
     </div>
   </div>
 
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
-    // Data pengguna
-    const users = {
-      admin: 'admin123',
-      customer: 'customer123'
-    };
-
-    function login() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Login response:', data); // Logging respons untuk memastikan userId ada
-          if (data.success) {
-            if (data.userId !== undefined) { // Cek apakah userId ada
-              localStorage.setItem('userId', data.userId);
-              localStorage.setItem('loginToken', data.token);
-              localStorage.setItem('userRole', data.role);
-              alert(`Selamat datang, ${data.role === 'admin' ? 'Admin' : 'Customer'}!`);
-              window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
-            } else {
-              console.error('User ID is missing from the response.');
-
-            }
-          } else {
-            alert('Username atau password salah.');
-          }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-    // Saat halaman dimuat, cek apakah ada token login
-    document.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('loginToken')) {
-        // Redirect ke halaman utama jika pengguna sudah login
-        window.location.href = 'index.html';
-      }
-    });
 
     // Fitur Toggle Password
     const togglePassword = document.getElementById('togglePassword');
@@ -221,6 +164,53 @@
     function loginWithApple() {
       alert('Login dengan Apple belum dikonfigurasi.');
     }
+
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('loginToken', data.token);
+            localStorage.setItem('userRole', data.role);
+            alert(`Selamat datang, ${data.role === 'admin' ? 'Admin' : 'Customer'}!`);
+            window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
+          } else {
+            alert('Username atau password salah.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Fungsi callback untuk Google Sign-In
+    function handleCredentialResponse(response) {
+      console.log("Encoded JWT ID token: " + response.credential);
+      fetch('http://localhost:3000/google-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: response.credential })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('loginToken', data.token);
+            localStorage.setItem('userRole', data.role);
+            window.location.href = data.redirectUrl; // Redirect ke halaman sesuai role
+          } else {
+            alert('Login dengan Google gagal.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
   </script>
 
 </body>

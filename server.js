@@ -5,8 +5,9 @@ const mysql = require('mysql'); // Paket untuk koneksi MySQL
 const bcrypt = require('bcrypt'); // Paket untuk hashing password
 const multer = require('multer'); // Untuk mengunggah file
 const path = require('path'); // Untuk manipulasi path
-const nodemailer = require('nodemailer');
-// Inisialisasi aplikasi Express
+const nodemailer = require('nodemailer');// Inisialisasi aplikasi Express
+const { OAuth2Client } = require('google-auth-library');
+const googleClient = new OAuth2Client('158123500330-rdcsku76df6tc8q8ubohmne58e5tgibn.apps.googleusercontent.com'); // Ganti dengan Client ID Anda
 const app = express();
 
 // Middleware CORS - mengizinkan semua origin
@@ -29,6 +30,85 @@ db.connect((err) => {
         console.log('Connected to MySQL');
     }
 });
+app.post('/google-login', async (req, res) => {
+    const { token } = req.body;
+
+    try {
+        // Verifikasi token menggunakan Google API
+        const ticket = await googleClient.verifyIdToken({
+            idToken: token,
+            audience: '158123500330-rdcsku76df6tc8q8ubohmne58e5tgibn.apps.googleusercontent.com' // Client ID Anda
+        });
+        const payload = ticket.getPayload();
+        const email = payload['email'];
+
+        // Cek apakah user sudah ada di database berdasarkan email
+        const checkUserQuery = 'SELECT * FROM users WHERE email = ?';
+        db.query(checkUserQuery, [email], (err, results) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Server error' });
+            }
+
+            if (results.length > 0) {
+                // Jika pengguna sudah ada, redirect berdasarkan role yang ada di database
+                const user = results[0];
+                const redirectUrl = user.role === 'admin' ? 'admin.html' : 'index.html';
+                res.json({ success: true, userId: user.id, role: user.role, redirectUrl });
+            } else {
+                // Jika pengguna belum ada, tambahkan sebagai customer baru
+                const insertUserQuery = 'INSERT INTO users (email, role) VALUES (?, ?)';
+                db.query(insertUserQuery, [email, 'customer'], (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ success: false, message: 'Failed to save user' });
+                    }
+                    res.json({ success: true, userId: result.insertId, role: 'customer', redirectUrl: 'index.html' });
+                });
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(401).json({ success: false, message: 'Invalid Google token' });
+    }
+});
+// Endpoint untuk registrasi
+// Endpoint untuk registrasi
+app.post('/register', (req, res) => {
+    const { username, password, email } = req.body;
+    const role = 'customer';
+
+    // Hash password sebelum menyimpannya ke database
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+        if (err) {
+            console.error('Error hashing password:', err);
+            res.status(500).json({ success: false, message: 'Error hashing password' });
+            return;
+        }
+
+        // Query untuk menyimpan data ke tabel users
+        const insertUserQuery = 'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)';
+        db.query(insertUserQuery, [username, hashedPassword, email, role], (err, result) => {
+            if (err) {
+                console.error('Error inserting user:', err);
+                res.status(500).json({ success: false, message: 'Gagal membuat akun' });
+                return;
+            }
+
+            // Hapus data dari temp_users setelah berhasil menyimpan ke users
+            const deleteQuery = 'DELETE FROM temp_users WHERE email = ?';
+            db.query(deleteQuery, [email], (deleteErr, deleteResult) => {
+                if (deleteErr) {
+                    console.error('Error deleting temp user:', deleteErr);
+                    return res.status(500).json({ success: false, message: 'Registrasi berhasil, tetapi gagal menghapus data sementara' });
+                }
+                res.json({ success: true, message: 'Akun berhasil dibuat dan data sementara dihapus' });
+            });
+        });
+    });
+});
+
+
+let verificationCode = Math.floor(100000 + Math.random() * 900000); // Kode 6 digit acak
+
 // Konfigurasi penyimpanan multer untuk menyimpan file foto profil
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -110,36 +190,6 @@ app.put('/menu/edit/:id', (req, res) => {
     });
 });
 
-
-
-
-
-// Endpoint untuk registrasi
-app.post('/register', (req, res) => {
-    const { username, password, email } = req.body;
-    const role = 'customer'; // Set default role sebagai customer
-
-    // Hash password sebelum menyimpannya ke database
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-        if (err) {
-            console.error('Error hashing password:', err);
-            res.status(500).json({ success: false, message: 'Error hashing password' });
-            return;
-        }
-
-        // Jika registrasi berhasil, hapus data dari temp_users
-        const deleteQuery = 'DELETE FROM temp_users WHERE email = ?';
-        db.query(deleteQuery, [email], (deleteErr, deleteResult) => {
-            if (deleteErr) {
-                console.error('Error deleting temp user:', deleteErr);
-                return res.status(500).json({ success: false, message: 'Registrasi berhasil, tetapi gagal menghapus data sementara' });
-            }
-            res.json({ success: true, message: 'Akun berhasil dibuat dan data sementara dihapus' });
-        });
-    });
-});
-
-let verificationCode = Math.floor(100000 + Math.random() * 900000); // Kode 6 digit acak
 
 // Konfigurasi transporter Nodemailer
 const transporter = nodemailer.createTransport({
@@ -421,9 +471,51 @@ app.post('/reservasi', (req, res) => {
         if (err) {
             return res.status(500).json({ success: false, message: 'Gagal membuat reservasi' });
         }
-        res.json({ success: true, message: 'Reservasi berhasil dibuat' });
+
+        // Konfigurasi email
+        const mailOptions = {
+            from: 'sahtulbb@gmail.com', // Ganti dengan email Anda
+            to: email, // Email pengguna yang diinput di form reservasi
+            subject: '🎉 Konfirmasi Reservasi Anda di [Nama Restoran]!',
+            html: `
+        <h2>Halo, ${name}!</h2>
+        <p>Terima kasih telah memilih [Nama Restoran] untuk pengalaman bersantap Anda. Kami sangat senang menyambut Anda!</p>
+        
+        <h3>Detail Reservasi Anda</h3>
+        <ul>
+            <li><strong>Paket Pilihan:</strong> ${package_name}</li>
+            <li><strong>Tanggal:</strong> ${reservation_date}</li>
+            <li><strong>Waktu:</strong> ${reservation_time}</li>
+        </ul>
+
+        <p>Silakan datang tepat waktu agar kami dapat memberikan layanan terbaik untuk Anda.</p>
+
+        <p><strong>Lokasi:</strong></p>
+        <p>[Alamat lengkap restoran]</p>
+
+        <h3>Butuh Bantuan?</h3>
+        <p>Jika ada perubahan atau pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami di <a href="mailto:sahtulbb@gmail.com">sahtulbb@gmail.com</a> atau melalui nomor telepon [Nomor Telepon Restoran].</p>
+
+        <p>Sampai jumpa di [Nama Restoran]! 🍽️</p>
+        
+        <p>Salam Hangat,<br>[Nama Restoran]</p>
+    `
+        };
+
+
+        // Kirim email menggunakan Nodemailer
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Error saat mengirim email:', error);
+                return res.status(500).json({ success: false, message: 'Reservasi dibuat, tapi gagal mengirim email.' });
+            } else {
+                console.log('Email terkirim:', info.response);
+                res.status(200).json({ success: true, message: 'Reservasi berhasil dibuat dan email terkirim.' });
+            }
+        });
     });
 });
+
 
 app.get('/reservation-packages', (req, res) => {
     const query = 'SELECT * FROM reservation_packages';
