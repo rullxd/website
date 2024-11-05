@@ -30,7 +30,41 @@ body {
     line-height: 1.6;
     color: var(--text-primary);
     background-color: var(--background-primary);
-    padding: 20px;
+}
+
+/* Sidebar */
+.admin-navbar {
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    width: 80px;
+    position: fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    z-index: 1000;
+}
+
+.admin-navbar .icon {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 1rem 0;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.admin-navbar .icon:hover {
+    color: #e74c3c;
+}
+
+.admin-navbar .top-icons,
+.admin-navbar .bottom-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 /* Heading Styles */
@@ -38,7 +72,6 @@ h1,
 h2 {
     text-align: center;
     color: var(--heading-color);
-    margin-top: 20px;
 }
 
 h1 {
