@@ -298,13 +298,13 @@ app.post('/verifyCode', (req, res) => {
 
 // Endpoint untuk login
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
+    const { usernameOrEmail, password } = req.body;
 
-    // Query untuk mencari pengguna dengan username yang diberikan
-    const query = 'SELECT * FROM users WHERE username = ?';
-    db.query(query, [username], (err, results) => {
+    // Query untuk mencari pengguna berdasarkan username atau email
+    const query = 'SELECT * FROM users WHERE username = ? OR email = ?';
+    db.query(query, [usernameOrEmail, usernameOrEmail], (err, results) => {
         if (err || results.length === 0) {
-            return res.status(401).json({ success: false, message: 'Invalid username or password' });
+            return res.status(401).json({ success: false, message: 'Invalid username/email or password' });
         }
 
         if (results.length > 0) {
@@ -315,7 +315,7 @@ app.post('/login', (req, res) => {
                     console.error('Error comparing password:', err);
                     res.status(500).json({ success: false, message: 'Internal server error' });
                 } else if (isMatch) {
-                    const token = Buffer.from(username).toString('base64');
+                    const token = Buffer.from(usernameOrEmail).toString('base64');
 
                     res.json({ success: true, userId: user.id, role: user.role, token: token });
                 } else {
@@ -327,6 +327,7 @@ app.post('/login', (req, res) => {
         }
     });
 });
+
 
 app.get('/profile', (req, res) => {
     const userId = req.query.user_id;
