@@ -157,7 +157,6 @@ table#menuTable {
     box-shadow: 0 4px 8px var(--shadow-color);
     border-radius: 10px;
     overflow: hidden;
-    margin-left: 100px;
 }
 
 table#menuTable thead {
