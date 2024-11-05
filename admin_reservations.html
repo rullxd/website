@@ -48,6 +48,12 @@
         </table>
     </div>
     <script>
+
+        // Format date to a more readable format
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
         // Fungsi untuk mengambil data reservasi
         async function fetchReservations() {
             try {
@@ -64,7 +70,7 @@
                             <td>${reservation.id}</td>
                             <td>${reservation.user_id}</td>
                             <td>${reservation.package_name}</td>
-                            <td>${reservation.reservation_date}</td>
+                           <td>${formatDate(reservation.reservation_date)}</td>
                             <td>${reservation.reservation_time}</td>
                             <td>${reservation.name}</td>
                             <td>${reservation.email}</td>
