@@ -31,8 +31,6 @@
         data-context="signin" data-callback="handleCredentialResponse" data-auto_prompt="false">
       </div>
       <div class="g_id_signin" data-type="standard"></div>
-      <i class="fab fa-facebook" onclick="loginWithFacebook()" title="Login dengan Facebook"></i>
-      <i class="fab fa-apple" onclick="loginWithApple()" title="Login dengan Apple"></i>
     </div>
 
     <div class="register-link">
@@ -53,17 +51,6 @@
       this.classList.toggle('fa-eye-slash');
     });
 
-    function loginWithGoogle() {
-      alert('Login dengan Google belum dikonfigurasi.');
-    }
-
-    function loginWithFacebook() {
-      alert('Login dengan Facebook belum dikonfigurasi.');
-    }
-
-    function loginWithApple() {
-      alert('Login dengan Apple belum dikonfigurasi.');
-    }
 
     function login() {
       const usernameOrEmail = document.getElementById("usernameOrEmail").value;
