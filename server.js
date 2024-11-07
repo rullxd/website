@@ -591,8 +591,12 @@ app.get('/reservations', (req, res) => {
 app.get('/reservations/:userId', (req, res) => {
     const userId = req.params.userId;
 
-    const query = 'SELECT * FROM riwayat_reservasi WHERE user_id = ?';
-    db.query(query, [userId], (err, results) => {
+    const query = `
+        SELECT * FROM reservations WHERE user_id = ?
+        UNION
+        SELECT * FROM riwayat_reservasi WHERE user_id = ?
+    `;
+    db.query(query, [userId, userId], (err, results) => {
         if (err) {
             return res.status(500).json({ success: false, message: 'Failed to fetch reservations' });
         }
