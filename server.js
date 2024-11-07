@@ -463,12 +463,17 @@ app.delete('/cart/remove', (req, res) => {
 app.post('/reservasi', (req, res) => {
     const { user_id, package_name, reservation_date, reservation_time, name, email, phone } = req.body;
 
+    // Dapatkan tanggal hari ini saja tanpa waktu
+    const currentDate = new Date().toISOString().slice(0, 10); // Hanya mengambil bagian 'YYYY-MM-DD'
+
+    // Masukkan data ke tabel `reservations`, termasuk tanggal yang sudah diformat
     const query = `
-        INSERT INTO reservations (user_id, package_name, reservation_date, reservation_time, name, email, phone)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO reservations (user_id, package_name, reservation_date, reservation_time, name, email, phone, time_create)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    db.query(query, [user_id, package_name, reservation_date, reservation_time, name, email, phone], (err, result) => {
+    // Gunakan tanggal yang diformat sebagai nilai untuk `time_create`
+    db.query(query, [user_id, package_name, reservation_date, reservation_time, name, email, phone, currentDate], (err, result) => {
         if (err) {
             return res.status(500).json({ success: false, message: 'Gagal membuat reservasi' });
         }
@@ -522,8 +527,8 @@ const moveExpiredReservations = () => {
 
     // Query untuk memindahkan data yang sudah kadaluwarsa atau statusnya canceled
     const queryMove = `
-        INSERT INTO riwayat_reservasi (user_id, package_name, reservation_date, reservation_time, name,phone, email, status)
-        SELECT user_id, package_name, reservation_date, reservation_time, name,phone, email, status
+        INSERT INTO riwayat_reservasi (user_id, package_name, reservation_date, reservation_time, name,phone, email, status ,time_create)
+        SELECT user_id, package_name, reservation_date, reservation_time, name,phone, email, status,time_create
         FROM reservations
         WHERE (reservation_date < CURDATE() OR (reservation_date = CURDATE() AND reservation_time < CURTIME())) 
         OR status = 'Cancelled';
