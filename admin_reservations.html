@@ -26,7 +26,7 @@
         </div>
     </nav>
     <div class="dashboard-container" style="margin-left: 100px;">
-        <h1>Daftar Reservasi</h1>
+        <h1>Daftar Reservasi Berlangsung</h1>
         <table border="1">
             <thead>
                 <tr>
@@ -57,7 +57,7 @@
         // Fungsi untuk mengambil data reservasi
         async function fetchReservations() {
             try {
-                const response = await fetch('http://localhost:3000/reservations');
+                const response = await fetch('http://localhost:3000/reservationsz');
                 const data = await response.json();
 
                 if (data.success) {

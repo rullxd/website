@@ -487,6 +487,7 @@ app.post('/reservasi', (req, res) => {
             <li><strong>Paket Pilihan:</strong> ${package_name}</li>
             <li><strong>Tanggal:</strong> ${reservation_date}</li>
             <li><strong>Waktu:</strong> ${reservation_time}</li>
+            
         </ul>
 
         <p>Silakan datang tepat waktu agar kami dapat memberikan layanan terbaik untuk Anda.</p>
@@ -516,6 +517,45 @@ app.post('/reservasi', (req, res) => {
         });
     });
 });
+const moveExpiredReservations = () => {
+    const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); // Format waktu sekarang
+
+    // Query untuk memindahkan data yang sudah kadaluwarsa atau statusnya canceled
+    const queryMove = `
+        INSERT INTO riwayat_reservasi (user_id, package_name, reservation_date, reservation_time, name,phone, email, status)
+        SELECT user_id, package_name, reservation_date, reservation_time, name,phone, email, status
+        FROM reservations
+        WHERE (reservation_date < CURDATE() OR (reservation_date = CURDATE() AND reservation_time < CURTIME())) 
+        OR status = 'Cancelled';
+    `;
+
+    // Eksekusi query pemindahan
+    db.query(queryMove, (err, result) => {
+        if (err) {
+            console.error('Gagal memindahkan reservasi yang sudah kadaluwarsa atau dibatalkan:', err);
+            return;
+        }
+
+        // Jika data berhasil dipindahkan, hapus dari tabel asli
+        const queryDelete = `
+            DELETE FROM reservations
+            WHERE (reservation_date < CURDATE() OR (reservation_date = CURDATE() AND reservation_time < CURTIME())) 
+            OR status = 'Cancelled';
+        `;
+
+        db.query(queryDelete, (err, result) => {
+            if (err) {
+                console.error('Gagal menghapus reservasi yang sudah dipindahkan:', err);
+            } else {
+                console.log('Reservasi yang kadaluwarsa atau dibatalkan berhasil dipindahkan ke tabel riwayat.');
+            }
+        });
+    });
+};
+
+// Panggil fungsi ini setiap satu jam atau sesuai kebutuhan Anda
+setInterval(moveExpiredReservations, 60 * 1000); // Jalankan setiap satu jam
+
 
 
 app.get('/reservation-packages', (req, res) => {
@@ -527,8 +567,18 @@ app.get('/reservation-packages', (req, res) => {
         res.json({ success: true, packages: results });
     });
 });
-app.get('/reservations', (req, res) => {
+app.get('/reservationsz', (req, res) => {
     const query = 'SELECT * FROM reservations';
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Gagal mengambil data reservasi' });
+        }
+        res.json({ success: true, reservations: results });
+    });
+});
+
+app.get('/reservations', (req, res) => {
+    const query = 'SELECT * FROM riwayat_reservasi';
     db.query(query, (err, results) => {
         if (err) {
             return res.status(500).json({ success: false, message: 'Gagal mengambil data reservasi' });
@@ -541,7 +591,7 @@ app.get('/reservations', (req, res) => {
 app.get('/reservations/:userId', (req, res) => {
     const userId = req.params.userId;
 
-    const query = 'SELECT * FROM reservations WHERE user_id = ?';
+    const query = 'SELECT * FROM riwayat_reservasi WHERE user_id = ?';
     db.query(query, [userId], (err, results) => {
         if (err) {
             return res.status(500).json({ success: false, message: 'Failed to fetch reservations' });
