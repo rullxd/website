@@ -201,20 +201,11 @@ button {
     justify-content: center;
 }
 
-button.edit {
-    background-color: #3498db;
-    color: #fff;
-    margin-bottom: 5px;
-}
-
-button.delete {
-    background-color: var(--primary-color);
-    color: #fff;
-}
-
 button:hover {
     opacity: 0.9;
     transform: scale(1.05);
+    background-color: var(--primary-color);
+    color: var(--background-primary);
 }
 
 /* Tampilan Responsive untuk Tabel */
@@ -230,5 +221,6 @@ button:hover {
     button {
         font-size: 0.8rem;
         padding: 6px 10px;
+        margin: 10px;
     }
 }
