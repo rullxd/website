@@ -65,10 +65,22 @@ body {
     align-items: center;
 }
 
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
+.logo-img {
+    height: 60px;
+    /* Sesuaikan ukuran tinggi */
+    width: auto;
+    /* Pertahankan proporsi logo */
+    display: block;
+    /* Pastikan hanya logo yang mempengaruhi ukuran elemen */
+    margin: 0 auto;
+    /* Opsional: Untuk memusatkan logo di dalam div */
+}
+
+.navbar .logo {
+    flex: 0 0 auto;
+    /* Agar elemen logo tidak memengaruhi elemen lainnya di navbar */
+    padding: 0;
+    /* Pastikan tidak ada padding tambahan */
 }
 
 .nav-links {
