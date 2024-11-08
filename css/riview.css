@@ -264,7 +264,7 @@ body {
 }
 
 .sidebar-header {
-    padding: 20px;
+    padding: 26px;
     border-bottom: 1px solid var(--shadow-color);
     display: flex;
     justify-content: space-between;
