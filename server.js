@@ -19,7 +19,7 @@ app.use(express.json());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root', // Ganti dengan username MySQL Anda
-    database: 'RestoranSaya' // Nama database Anda
+    database: 'login_app' // Nama database Anda
 });
 // Coba koneksi ke database
 db.connect((err) => {
@@ -194,8 +194,8 @@ app.put('/menu/edit/:id', (req, res) => {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'sahtulbb@gmail.com',      // Ganti dengan email Anda
-        pass: 'wzjw totv zqxw uzfm'          // Ganti dengan password aplikasi atau kata sandi
+        user: 'hazelnuttzero026@gmail.com',      // Ganti dengan email Anda
+        pass: 'lilyehabit'          // Ganti dengan password aplikasi atau kata sandi
     }
 });
 
