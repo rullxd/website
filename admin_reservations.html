@@ -57,7 +57,7 @@
         // Fungsi untuk mengambil data reservasi
         async function fetchReservations() {
             try {
-                const response = await fetch('http://localhost:3000/reservationsz');
+                const response = await fetch('http://localhost:3000/reservations');
                 const data = await response.json();
 
                 if (data.success) {

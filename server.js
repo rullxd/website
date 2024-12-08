@@ -19,7 +19,7 @@ app.use(express.json());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root', // Ganti dengan username MySQL Anda
-    database: 'login_app' // Nama database Anda
+    database: 'restoransaya2' // Nama database Anda
 });
 // Coba koneksi ke database
 db.connect((err) => {
@@ -194,8 +194,8 @@ app.put('/menu/edit/:id', (req, res) => {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'hazelnuttzero026@gmail.com',      // Ganti dengan email Anda
-        pass: 'lilyehabit'          // Ganti dengan password aplikasi atau kata sandi
+        user: 'sahtulbb@gmail.com',      // Ganti dengan email Anda
+        pass: 'wzjw totv zqxw uzfm'          // Ganti dengan password aplikasi atau kata sandi
     }
 });
 
@@ -269,27 +269,33 @@ function sendVerificationEmail(email, verificationCode, res) {
 app.post('/verifyCode', (req, res) => {
     const { email, verificationCode } = req.body;
 
-    // Query ke database untuk mengambil kode verifikasi berdasarkan email
+    if (!email || !verificationCode) {
+        return res.status(400).json({ success: false, message: 'Email dan kode verifikasi wajib diisi.' });
+    }
+
     const query = 'SELECT verification_code FROM temp_users WHERE email = ?';
     db.query(query, [email], (err, results) => {
         if (err) {
-            console.error(err);
+            console.error('Error Query:', err);
             return res.status(500).json({ success: false, message: 'Terjadi kesalahan pada server.' });
         }
 
-        if (results.length === 0) {
-            return res.json({ success: false, message: 'Email tidak ditemukan di database.' });
+
+
+        if (!results || results.length === 0) {
+            return res.status(404).json({ success: false, message: 'Email tidak ditemukan di database.' });
         }
 
-        // Ambil kode verifikasi dari hasil query dan bandingkan
         const storedCode = results[0].verification_code;
+
         if (storedCode === verificationCode) {
-            res.json({ success: true, message: 'Kode verifikasi sesuai' });
+            return res.json({ success: true, message: 'Kode verifikasi sesuai' });
         } else {
-            res.json({ success: false, message: 'Kode verifikasi salah atau tidak valid.' });
+            return res.json({ success: false, message: 'Kode verifikasi salah atau tidak valid.' });
         }
     });
 });
+
 
 
 
@@ -462,17 +468,16 @@ app.delete('/cart/remove', (req, res) => {
 app.post('/reservasi', (req, res) => {
     const { user_id, package_name, reservation_date, reservation_time, name, email, phone } = req.body;
 
-    // Dapatkan tanggal hari ini saja tanpa waktu
-    const currentDate = new Date().toISOString().slice(0, 10); // Hanya mengambil bagian 'YYYY-MM-DD'
+
 
     // Masukkan data ke tabel `reservations`, termasuk tanggal yang sudah diformat
     const query = `
-        INSERT INTO reservations (user_id, package_name, reservation_date, reservation_time, name, email, phone, time_create)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO reservations (user_id, package_name, reservation_date, reservation_time, name, email, phone)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
-    // Gunakan tanggal yang diformat sebagai nilai untuk `time_create`
-    db.query(query, [user_id, package_name, reservation_date, reservation_time, name, email, phone, currentDate], (err, result) => {
+
+    db.query(query, [user_id, package_name, reservation_date, reservation_time, name, email, phone], (err, result) => {
         if (err) {
             return res.status(500).json({ success: false, message: 'Gagal membuat reservasi' });
         }
@@ -521,45 +526,6 @@ app.post('/reservasi', (req, res) => {
         });
     });
 });
-const moveExpiredReservations = () => {
-    const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); // Format waktu sekarang
-
-    // Query untuk memindahkan data yang sudah kadaluwarsa atau statusnya canceled
-    const queryMove = `
-        INSERT INTO riwayat_reservasi (user_id, package_name, reservation_date, reservation_time, name,phone, email, status ,time_create)
-        SELECT user_id, package_name, reservation_date, reservation_time, name,phone, email, status,time_create
-        FROM reservations
-        WHERE (reservation_date < CURDATE() OR (reservation_date = CURDATE() AND reservation_time < CURTIME())) 
-        OR status = 'Cancelled';
-    `;
-
-    // Eksekusi query pemindahan
-    db.query(queryMove, (err, result) => {
-        if (err) {
-            console.error('Gagal memindahkan reservasi yang sudah kadaluwarsa atau dibatalkan:', err);
-            return;
-        }
-
-        // Jika data berhasil dipindahkan, hapus dari tabel asli
-        const queryDelete = `
-            DELETE FROM reservations
-            WHERE (reservation_date < CURDATE() OR (reservation_date = CURDATE() AND reservation_time < CURTIME())) 
-            OR status = 'Cancelled';
-        `;
-
-        db.query(queryDelete, (err, result) => {
-            if (err) {
-                console.error('Gagal menghapus reservasi yang sudah dipindahkan:', err);
-            } else {
-                console.log('Reservasi yang kadaluwarsa atau dibatalkan berhasil dipindahkan ke tabel riwayat.');
-            }
-        });
-    });
-};
-
-// Panggil fungsi ini setiap satu jam atau sesuai kebutuhan Anda
-setInterval(moveExpiredReservations, 60 * 1000); // Jalankan setiap satu jam
-
 
 
 app.get('/reservation-packages', (req, res) => {
@@ -571,7 +537,7 @@ app.get('/reservation-packages', (req, res) => {
         res.json({ success: true, packages: results });
     });
 });
-app.get('/reservationsz', (req, res) => {
+app.get('/reservations', (req, res) => {
     const query = 'SELECT * FROM reservations';
     db.query(query, (err, results) => {
         if (err) {
@@ -581,15 +547,6 @@ app.get('/reservationsz', (req, res) => {
     });
 });
 
-app.get('/reservations', (req, res) => {
-    const query = 'SELECT * FROM riwayat_reservasi';
-    db.query(query, (err, results) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Gagal mengambil data reservasi' });
-        }
-        res.json({ success: true, reservations: results });
-    });
-});
 
 // Endpoint to get reservations by user_id
 app.get('/reservations/:userId', (req, res) => {
@@ -597,8 +554,6 @@ app.get('/reservations/:userId', (req, res) => {
 
     const query = `
         SELECT * FROM reservations WHERE user_id = ?
-        UNION
-        SELECT * FROM riwayat_reservasi WHERE user_id = ?
     `;
     db.query(query, [userId, userId], (err, results) => {
         if (err) {
@@ -617,6 +572,31 @@ app.put('/reservations/:id/status', (req, res) => {
             return res.status(500).json({ success: false, message: 'Failed to update status' });
         }
         res.json({ success: true, message: 'Status updated successfully' });
+    });
+});
+const port = 3000;
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'restoransaya2',
+    connectionLimit: 10
+});
+app.get('/reservations-per-month', (req, res) => {
+    const query = `
+        SELECT 
+            MONTH(reservation_date) AS month, 
+            COUNT(*) AS total_reservations 
+        FROM reservations 
+        GROUP BY MONTH(reservation_date)
+        ORDER BY MONTH(reservation_date);
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        res.json(results);
     });
 });
 

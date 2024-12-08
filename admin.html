@@ -7,6 +7,28 @@
     <title>Dashboard Admin</title>
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Styling tambahan untuk card */
+
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: var(--heading-color);
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            /* Sesuaikan tinggi sesuai kebutuhan */
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -47,17 +69,23 @@
 
         <div class="card">
             <h2>Total Reservasi</h2>
-            <div class="chart" id="total-reservasi-chart"></div>
+            <div class="chart-container">
+                <canvas id="totalreservasichart" </canvas>
+            </div>
         </div>
 
         <div class="card">
             <h2>Rata-Rata Pendapatan</h2>
-            <div class="chart" id="average-revenue-chart"></div>
+            <div class="chart-container">
+                <canvas id="averagerevenuechart"></canvas>
+            </div>
         </div>
 
         <div class="card">
             <h2>Reservasi Per Hari</h2>
-            <div class="chart" id="daily-reservations-chart"></div>
+            <div class="chart-container">
+                <canvas id="dailyReservationsChart"></canvas>
+            </div>
         </div>
 
         <div class="card">
@@ -69,6 +97,126 @@
             </ul>
         </div>
     </div>
+    <script>
+        // Mendapatkan warna dari variabel CSS
+        const rootStyles = getComputedStyle(document.documentElement);
+        const primaryColor = rootStyles.getPropertyValue('--primary-color').trim();
+        const primaryBorderColor = rootStyles.getPropertyValue('--primary-color-dark').trim();
+
+
+
+        // Data grafik
+        const data1 = {
+            labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+            datasets: [{
+                label: 'Jumlah Reservasi',
+                data: [5, 15, 10, 20, 25, 30, 18, 20, 13, 24, 40, 12],
+                backgroundColor: 'rgba(231, 76, 60, 0.7)', // Transparansi warna tema
+                borderColor: '#e74c3c', // Warna tema utama
+                borderWidth: 1
+            }]
+        };
+        const data2 = {
+            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+            datasets: [{
+                label: 'Jumlah Reservasi',
+                data: [5, 15, 10, 20, 25, 30, 18],
+                backgroundColor: 'rgba(231, 76, 60, 0.7)', // Transparansi warna tema
+                borderColor: '#e74c3c', // Warna tema utama
+                borderWidth: 1
+            }]
+        };
+        const data3 = {
+            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+            datasets: [{
+                label: 'Jumlah Reservasi',
+                data: [5, 15, 10, 20, 25, 30, 18],
+                backgroundColor: 'rgba(231, 76, 60, 0.7)', // Transparansi warna tema
+                borderColor: '#e74c3c', // Warna tema utama
+                borderWidth: 1
+            }]
+        };
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    backgroundColor: '#e74c3c',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#c0392b',
+                    borderWidth: 1,
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)',
+                    },
+                    ticks: {
+                        color: '#333',
+                    },
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)',
+                    },
+                    ticks: {
+                        color: '#333',
+                    },
+                },
+            },
+        };
+
+
+
+        // Total Reservasi
+        const ctx1 = document.getElementById('totalreservasichart').getContext('2d');
+        const totalreservasichart = new Chart(ctx1, {
+            type: 'bar',
+            data: data1,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        // Reservasi Per Hari
+        const ctx2 = document.getElementById('dailyReservationsChart').getContext('2d');
+        const dailyReservationsChart = new Chart(ctx2, {
+            type: 'bar',
+            data: data2,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        // Reservasi Per Hari
+        const ctx3 = document.getElementById('averagerevenuechart').getContext('2d');
+        const averagerevenuechart = new Chart(ctx3, {
+            type: 'bar',
+            data: data3,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const loginToken = localStorage.getItem('loginToken');

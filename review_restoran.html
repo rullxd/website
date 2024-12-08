@@ -1,94 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Reservasi Per Hari</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-
-        .login-container {
-            width: 300px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+        /* Styling tambahan untuk card */
+        .card {
+            padding: 1rem;
+            background-color: var(--background-secondary);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow-color-strong);
             text-align: center;
+            max-width: 500px;
+            margin: auto;
         }
 
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .card h2 {
+            font-size: 1.5rem;
+            color: var(--heading-color);
+            margin-bottom: 1rem;
         }
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
+        .chart-container {
+            position: relative;
+            height: 300px;
+            /* Sesuaikan tinggi sesuai kebutuhan */
         }
 
-        button:hover {
-            background-color: #0056b3;
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
 
 <body>
-
-    <div class="login-container">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Username" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button onclick="login()">Login</button>
-        <p id="error-message" style="color: red; display: none;">Username atau password salah!</p>
+    <!-- Kartu dengan Grafik -->
+    <div class="card">
+        <h2>Reservasi Per Hari</h2>
+        <div class="chart-container">
+            <canvas id="dailyReservationsChart"></canvas>
+        </div>
     </div>
 
+    <!-- Script Grafik -->
     <script>
-        // Data pengguna
-        const users = {
-            admin: 'admin123',
-            customer: 'customer123'
+        // Mendapatkan warna dari variabel CSS
+        const rootStyles = getComputedStyle(document.documentElement);
+        const primaryColor = rootStyles.getPropertyValue('--primary-color').trim();
+        const primaryBorderColor = rootStyles.getPropertyValue('--primary-color-dark').trim();
+
+        // Data grafik
+        const data = {
+            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+            datasets: [{
+                label: 'Jumlah Reservasi',
+                data: [5, 15, 10, 20, 25, 30, 18],
+                backgroundColor: primaryColor,
+                borderColor: primaryBorderColor,
+                borderWidth: 1
+            }]
         };
 
-        function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            // Cek login
-            if (users[username] && users[username] === password) {
-                if (username === 'admin') {
-                    alert('Selamat datang, Admin!');
-                    // Redirect ke halaman admin (bisa diubah sesuai kebutuhan)
-                    window.location.href = 'admin.html'; // Ganti dengan URL halaman admin
-                } else if (username === 'customer') {
-                    alert('Selamat datang, Customer!');
-                    // Redirect ke halaman customer (bisa diubah sesuai kebutuhan)
-                    window.location.href = 'customer.html'; // Ganti dengan URL halaman customer
+        // Konfigurasi chart
+        const ctx = document.getElementById('dailyReservationsChart').getContext('2d');
+        const dailyReservationsChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-            } else {
-                // Tampilkan pesan kesalahan
-                document.getElementById("error-message").style.display = "block";
             }
-        }
+        });
     </script>
-
 </body>
 
 </html>
