@@ -8,27 +8,7 @@
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Styling tambahan untuk card */
 
-
-        .card h2 {
-            font-size: 1.5rem;
-            color: var(--heading-color);
-            margin-bottom: 1rem;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-            /* Sesuaikan tinggi sesuai kebutuhan */
-        }
-
-        canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-    </style>
 </head>
 
 <body>
@@ -90,11 +70,9 @@
 
         <div class="card">
             <h2>Most Popular Menu</h2>
-            <ul>
-                <li>Nasi Goreng</li>
-                <li>Ayam Penyet</li>
-                <li>Pizza</li>
-            </ul>
+            <div class="chart-container">
+                <canvas id="menupopuler"></canvas>
+            </div>
         </div>
     </div>
     <script>
@@ -110,7 +88,7 @@
             labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
             datasets: [{
                 label: 'Jumlah Reservasi',
-                data: [5, 15, 10, 20, 25, 30, 18, 20, 13, 24, 40, 12],
+                data: [50, 150, 100, 200, 250, 300, 180, 200, 130, 240, 400, 120],
                 backgroundColor: 'rgba(231, 76, 60, 0.7)', // Transparansi warna tema
                 borderColor: '#e74c3c', // Warna tema utama
                 borderWidth: 1
@@ -129,13 +107,29 @@
         const data3 = {
             labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
             datasets: [{
-                label: 'Jumlah Reservasi',
-                data: [5, 15, 10, 20, 25, 30, 18],
-                backgroundColor: 'rgba(231, 76, 60, 0.7)', // Transparansi warna tema
-                borderColor: '#e74c3c', // Warna tema utama
+                label: 'Rata-rata Pendapatan (IDR)',
+                data: [1500000, 2000000, 1800000, 2200000, 2500000, 3000000, 2800000], // Pendapatan rata-rata per hari
+                backgroundColor: 'rgba(46, 204, 113, 0.7)', // Warna hijau transparan
+                borderColor: '#27ae60', // Warna hijau utama
                 borderWidth: 1
             }]
         };
+        const data4 = {
+            labels: ['Siomay Ayam', 'Pangsit Goreng', 'Salad Buah', 'Mie Goreng Seafood'],
+            datasets: [{
+                label: 'Total pelanggan pesan',
+                data: [500, 250, 300, 1500], // Pendapatan rata-rata per hari
+                backgroundColor: [
+                    '#3498db', // Biru
+                    '#9b59b6', // Ungu
+                    '#34495e', // Abu-abu
+                    '#1abc9c'  // Aqua
+                ],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        };
+
         const options = {
             responsive: true,
             maintainAspectRatio: false,
@@ -201,11 +195,11 @@
                 }
             }
         });
-        // Reservasi Per Hari
-        const ctx3 = document.getElementById('averagerevenuechart').getContext('2d');
-        const averagerevenuechart = new Chart(ctx3, {
-            type: 'bar',
-            data: data3,
+        // menu populer
+        const ctx4 = document.getElementById('menupopuler').getContext('2d');
+        const menupopuler = new Chart(ctx4, {
+            type: 'pie',
+            data: data4,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -214,6 +208,47 @@
                         beginAtZero: true
                     }
                 }
+            }
+        });
+        // Rata rata pendapatan
+        const ctx3 = document.getElementById('averagerevenuechart').getContext('2d');
+        const averagerevenuechart = new Chart(ctx3, {
+            type: 'line',
+            data: data3,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        backgroundColor: '#27ae60',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#1e8449',
+                        borderWidth: 1,
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return 'IDR ' + value.toLocaleString(); // Format angka menjadi IDR
+                            },
+                            color: '#333',
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                        },
+                    },
+                    x: {
+                        ticks: {
+                            color: '#333',
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                        },
+                    },
+                },
             }
         });
     </script>

@@ -32,6 +32,13 @@
     </div>
 
     <script>
+        // Fungsi untuk memuat tema yang tersimpan
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        }
         document.addEventListener('DOMContentLoaded', () => {
             const userId = localStorage.getItem('userId'); // Ambil userId dari localStorage
 

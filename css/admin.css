@@ -80,6 +80,17 @@ body {
     margin-top: 1rem;
 }
 
+.chart-container {
+    position: relative;
+    height: 300px;
+    /* Sesuaikan tinggi sesuai kebutuhan */
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 /* Statistik */
 .statistics {
     display: grid;
