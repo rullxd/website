@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan - Restaurant</title>
+    <style>
+        :root {
+            --primary-color: #e74c3c;
+            --primary-color-dark: #c0392b;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --background-primary: #fff;
+            --background-secondary: #f9f9f9;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 100px auto 40px;
+            padding: 20px;
+        }
+
+        .settings-header {
+            margin-bottom: 30px;
+        }
+
+        .settings-header h1 {
+            color: var(--text-primary);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .settings-section {
+            background: var(--background-primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+
+        .settings-section h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--shadow-color);
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--shadow-color);
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-item-label {
+            flex: 1;
+        }
+
+        .settings-item-label h3 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .settings-item-label p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .settings-item-control {
+            margin-left: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--shadow-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-section {
+            max-width: 500px;
+        }
+
+        .save-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .save-button:hover {
+            background-color: var(--primary-color-dark);
+        }
+
+        .settings-footer {
+            text-align: right;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="settings-container">
+        <div class="settings-header">
+            <h1>Pengaturan</h1>
+            <p>Kelola preferensi akun dan pengaturan notifikasi Anda</p>
+        </div>
+
+        <!-- Password Change Section -->
+        <div class="settings-section password-section">
+            <h2>Ubah Password</h2>
+            <form id="passwordChangeForm">
+                <div class="form-group">
+                    <label for="currentPassword">Password Saat Ini</label>
+                    <input type="password" id="currentPassword" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Password Baru</label>
+                    <input type="password" id="newPassword" class="form-input" required>
+                    <p class="error-message" id="passwordError"></p>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Konfirmasi Password Baru</label>
+                    <input type="password" id="confirmPassword" class="form-input" required>
+                </div>
+                <div class="settings-footer">
+                    <button type="submit" class="save-button">Simpan Password Baru</button>
+                </div>
+                <p class="success-message" id="successMessage">Password berhasil diubah!</p>
+                <p class="error-message" id="errorMessage">Gagal mengubah password. Silakan coba lagi.</p>
+            </form>
+        </div>
+
+        <!-- Other sections remain the same -->
+        <!-- ... -->
+    </div>
+
+    <script>
+        document.getElementById('passwordChangeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const passwordError = document.getElementById('passwordError');
+
+            // Reset messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            passwordError.style.display = 'none';
+
+            // Validate passwords match
+            if (newPassword !== confirmPassword) {
+                passwordError.textContent = 'Password baru dan konfirmasi password tidak cocok';
+                passwordError.style.display = 'block';
+                return;
+            }
+
+            // Validate password strength
+            if (newPassword.length < 8) {
+                passwordError.textContent = 'Password harus minimal 8 karakter';
+                passwordError.style.display = 'block';
+                return;
+            }
+
+            try {
+                const userId = localStorage.getItem('userId'); // Get userId from localStorage
+                const response = await fetch('http://localhost:3000/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        currentPassword,
+                        newPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    successMessage.style.display = 'block';
+                    document.getElementById('passwordChangeForm').reset();
+                } else {
+                    errorMessage.textContent = data.message || 'Gagal mengubah password';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>
