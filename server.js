@@ -549,11 +549,28 @@ app.get('/reservations', (req, res) => {
 app.get('/reservations-per-month', (req, res) => {
     const query = `
         SELECT
-            MONTH(time_create) AS month,
-            COUNT(*) AS total_reservations
-        FROM reservations
-        GROUP BY MONTH(time_create)
-        ORDER BY MONTH(time_create);
+    m.month AS month,
+    IFNULL(COUNT(r.time_create), 0) AS total_reservations
+FROM (
+    SELECT 1 AS month UNION ALL
+    SELECT 2 UNION ALL
+    SELECT 3 UNION ALL
+    SELECT 4 UNION ALL
+    SELECT 5 UNION ALL
+    SELECT 6 UNION ALL
+    SELECT 7 UNION ALL
+    SELECT 8 UNION ALL
+    SELECT 9 UNION ALL
+    SELECT 10 UNION ALL
+    SELECT 11 UNION ALL
+    SELECT 12
+) m
+LEFT JOIN reservations r
+    ON MONTH(r.time_create) = m.month
+    AND YEAR(r.time_create) = YEAR(CURDATE()) -- Hanya untuk tahun saat ini
+GROUP BY m.month
+ORDER BY m.month;
+
     `;
 
     db.query(query, (err, results) => {
@@ -624,14 +641,6 @@ app.put('/reservations/:id/status', (req, res) => {
         }
         res.json({ success: true, message: 'Status updated successfully' });
     });
-});
-const port = 3000;
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'restoransaya2',
-    connectionLimit: 10
 });
 
 
