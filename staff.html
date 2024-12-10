@@ -1,69 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservasi</title>
-    <link rel="stylesheet" href="staff.css">
+    <title>Dashboard Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
-<div class="sidebar">
-    <a href="#home">Home</a>
-    <a href="#reservasi">Reservasi</a>
-    <a href="#staff">Staff</a>
-    <a href="#menu">Menu</a>
-    <a href="#customers">Customers</a>
-    <a href="#setelan">Setelan</a>
-</div>
+    <nav class="admin-navbar">
+        <div class="top-icons">
+            <a href="admin_profile.html" class="icon"><i class="fas fa-user-circle"></i></a>
+        </div>
+        <div class="icon"><i class="fas fa-tachometer-alt"></i></div>
+        <a href="admin_reservations.html" class="icon"><i class="fas fa-calendar-alt"></i></a>
+        <a href="admin_menu.html" class="icon"><i class="fas fa-utensils"></i></a>
+        <div class="icon"><i class="fas fa-chart-line"></i></div>
+        <div class="icon"><i class="fas fa-cog"></i></div>
+        </div>
+        <div class="bottom-icons">
+            <a href="admin.html" class="icon" onclick="handleLoginLogout()"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </nav>
 
-<div class="main-content">
-    <header>
-        <h1>STAFF</h1>
-    </header>
-</div>
-
-<div class="main-container">
-    <!-- Left section with larger boxes -->
-    <div class="box-container">
-        <!-- Two-part box 1 -->
-        <div class="two-part-box">
-            <div class="box-image">
-                <img src="https://via.placeholder.com/200x150" alt="Picture 1">
+    <div class="dashboard-container">
+        <div class="statistics">
+            <div class="stat-card">
+                <h3>Total Pendapatan</h3>
+                <p>IDR 15,000,000</p>
             </div>
-            <div class="box-text">
-                <p>Description 1</p>
+            <div class="stat-card">
+                <h3>Total Reservasi</h3>
+                <p>250</p>
+            </div>
+            <div class="stat-card">
+                <h3>Meja Tersedia</h3>
+                <p>20</p>
+            </div>
+            <div class="stat-card">
+                <h3>Jumlah Hari</h3>
+                <p>30</p>
             </div>
         </div>
-        <input type="text" placeholder="Enter name here" class="name-input">
-        
-        <!-- Two-part box 2 -->
-        <div class="two-part-box">
-            <div class="box-image">
-                <img src="https://via.placeholder.com/200x150" alt="Picture 2">
-            </div>
-            <div class="box-text">
-                <p>Description 2</p>
+
+        <div class="card">
+            <h2>Total Reservasi</h2>
+            <div class="chart-container">
+                <canvas id="totalreservasichart" </canvas>
             </div>
         </div>
-        <input type="text" placeholder="Enter name here" class="name-input">
+
+        <div class="card">
+            <h2>Rata-Rata Pendapatan</h2>
+            <div class="chart-container">
+                <canvas id="averagerevenuechart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Reservasi Per Hari</h2>
+            <div class="chart-container">
+                <canvas id="dailyReservationsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Most Popular Menu</h2>
+            <div class="chart-container">
+                <canvas id="menupopuler"></canvas>
+            </div>
+        </div>
     </div>
+    <script>
+        // Mendapatkan warna dari variabel CSS
+        const rootStyles = getComputedStyle(document.documentElement);
+        const primaryColor = rootStyles.getPropertyValue('--primary-color').trim();
+        const primaryBorderColor = rootStyles.getPropertyValue('--primary-color-dark').trim();
 
-    <!-- Right sidebar with smaller boxes -->
-    <div class="sidebar2">
-        <div class="small-box">
-            <img src="https://via.placeholder.com/80x60" alt="Small Picture 1">
-            <p>Small Desc 1</p>
-        </div>
-        <div class="small-box">
-            <img src="https://via.placeholder.com/80x60" alt="Small Picture 2">
-            <p>Small Desc 2</p>
-        </div>
-        <div class="small-box">
-            <img src="https://via.placeholder.com/80x60" alt="Small Picture 3">
-            <p>Small Desc 3</p>
-        </div>
-    </div>
-</div>
+
+
+        // Data grafik
+
+        // Ambil data reservasi per bulan dari server
+        fetch('http://localhost:3000/reservations-per-month')
+            .then(response => response.json())
+            .then(data => {
+                // Buat grafik batang menggunakan chart.js
+                const ctx = document.getElementById('totalreservasichart').getContext('2d');
+                const totalreservasichart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(item => {
+                            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                            return monthNames[item.month - 1];
+                        }),
+                        datasets: [{
+                            label: 'Jumlah Reservasi',
+                            data: data.map(item => item.total_reservations),
+                            backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                            borderColor: '#e74c3c', // Warna tema utama
+                            borderWidth: 1
+
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+
+                });
+            })
+            .catch(error => console.error(error));
+
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    backgroundColor: '#e74c3c',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#c0392b',
+                    borderWidth: 1,
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)',
+                    },
+                    ticks: {
+                        color: '#333',
+                    },
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)',
+                    },
+                    ticks: {
+                        color: '#333',
+                    },
+                },
+            },
+        };
+
+
+        // Di dalam script tag di staff.html
+        fetch('/reservations-per-month')
+            .then(response => {
+                console.log('Received response from /reservations-per-month:', response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data from /reservations-per-month:', data);
+                // Lanjutkan dengan proses visualisasi data
+            })
+            .catch(error => {
+                console.error('Error fetching /reservations-per-month:', error);
+            });
+
+
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginToken = localStorage.getItem('loginToken');
+            const userRole = localStorage.getItem('userRole');
+
+            if (!loginToken || userRole !== 'admin') {
+                // Jika token tidak ada atau role bukan admin, arahkan pengguna ke halaman login atau halaman error
+                alert('Anda tidak memiliki izin untuk mengakses halaman ini.');
+                window.location.href = 'index.html'; // Ubah ke halaman yang sesuai, misalnya halaman login atau error
+            }
+        });
+    </script>
+
+
+    <script>
+        function handleLoginLogout() {
+            // Tampilkan dialog konfirmasi
+            const isConfirmed = confirm('Yakin mau logout?');
+
+            if (isConfirmed) {
+                // Jika pengguna memilih "Ya", hapus token dan logout
+                localStorage.removeItem('loginToken');
+                localStorage.removeItem('userId'); // Optional: Hapus userId jika ada
+                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
+                window.location.href = 'login.html'; // Redirect ke halaman login
+            } else {
+                // Jika pengguna memilih "Tidak", batalkan logout
+                console.log('Logout dibatalkan.');
+            }
+        }
+    </script>
+
+    <script>
+        // Script untuk membuat grafik menggunakan library seperti Chart.js atau D3.js
+    </script>
 </body>
+
 </html>

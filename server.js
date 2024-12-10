@@ -546,8 +546,26 @@ app.get('/reservations', (req, res) => {
         res.json({ success: true, reservations: results });
     });
 });
+app.get('/reservations-per-month', (req, res) => {
+    const query = `
+        SELECT 
+            MONTH(reservation_date) AS month, 
+            COUNT(*) AS total_reservations 
+        FROM reservations 
+        GROUP BY MONTH(reservation_date)
+        ORDER BY MONTH(reservation_date);
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send(err);
+        }
 
 
+        res.json(results);
+    });
+});
 // Endpoint to get reservations by user_id
 app.get('/reservations/:userId', (req, res) => {
     const userId = req.params.userId;
@@ -582,23 +600,8 @@ const pool = mysql.createPool({
     database: 'restoransaya2',
     connectionLimit: 10
 });
-app.get('/reservations-per-month', (req, res) => {
-    const query = `
-        SELECT 
-            MONTH(reservation_date) AS month, 
-            COUNT(*) AS total_reservations 
-        FROM reservations 
-        GROUP BY MONTH(reservation_date)
-        ORDER BY MONTH(reservation_date);
-    `;
 
-    db.query(query, (err, results) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        res.json(results);
-    });
-});
+
 
 
 // Menjalankan server di port 3000
