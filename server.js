@@ -548,12 +548,12 @@ app.get('/reservations', (req, res) => {
 });
 app.get('/reservations-per-month', (req, res) => {
     const query = `
-        SELECT 
-            MONTH(reservation_date) AS month, 
-            COUNT(*) AS total_reservations 
-        FROM reservations 
-        GROUP BY MONTH(reservation_date)
-        ORDER BY MONTH(reservation_date);
+        SELECT
+            MONTH(time_create) AS month,
+            COUNT(*) AS total_reservations
+        FROM reservations
+        GROUP BY MONTH(time_create)
+        ORDER BY MONTH(time_create);
     `;
 
     db.query(query, (err, results) => {
@@ -566,6 +566,39 @@ app.get('/reservations-per-month', (req, res) => {
         res.json(results);
     });
 });
+app.get('/reservations-per-day', (req, res) => {
+    const query = `
+        SELECT
+            d.day_index,
+            IFNULL(COUNT(r.time_create), 0) AS total_reservations
+        FROM (
+            SELECT 0 AS day_index UNION ALL
+            SELECT 1 UNION ALL
+            SELECT 2 UNION ALL
+            SELECT 3 UNION ALL
+            SELECT 4 UNION ALL
+            SELECT 5 UNION ALL
+            SELECT 6
+        ) d
+        LEFT JOIN reservations r
+            ON WEEKDAY(r.time_create) = d.day_index
+            AND YEARWEEK(r.time_create, 1) = YEARWEEK(CURDATE(), 1)
+            AND WEEKDAY(r.time_create) BETWEEN 0 AND WEEKDAY(CURDATE())
+        GROUP BY d.day_index
+        ORDER BY d.day_index;
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send(err);
+        }
+
+        res.json(results);
+    });
+});
+
+
 // Endpoint to get reservations by user_id
 app.get('/reservations/:userId', (req, res) => {
     const userId = req.params.userId;

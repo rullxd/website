@@ -84,6 +84,31 @@
 
 
         // Data grafik
+        const data3 = {
+            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+            datasets: [{
+                label: 'Rata-rata Pendapatan (IDR)',
+                data: [1500000, 2000000, 1800000, 2200000, 2500000, 3000000, 2800000], // Pendapatan rata-rata per hari
+                backgroundColor: 'rgba(46, 204, 113, 0.7)', // Warna hijau transparan
+                borderColor: '#27ae60', // Warna hijau utama
+                borderWidth: 1
+            }]
+        };
+        const data4 = {
+            labels: ['Siomay Ayam', 'Pangsit Goreng', 'Salad Buah', 'Mie Goreng Seafood'],
+            datasets: [{
+                label: 'Total pelanggan pesan',
+                data: [500, 250, 300, 1500], // Pendapatan rata-rata per hari
+                backgroundColor: [
+                    '#3498db', // Biru
+                    '#9b59b6', // Ungu
+                    '#34495e', // Abu-abu
+                    '#1abc9c'  // Aqua
+                ],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        };
 
         // Ambil data reservasi per bulan dari server
         fetch('http://localhost:3000/reservations-per-month')
@@ -121,6 +146,38 @@
             })
             .catch(error => console.error(error));
 
+        fetch('http://localhost:3000/reservations-per-day')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('dailyReservationsChart').getContext('2d');
+                const dailyReservationsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(item => {
+                            const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                            return dayNames[item.day_index];
+                        }),
+                        datasets: [{
+                            label: 'Jumlah Reservasi',
+                            data: data.map(item => item.total_reservations), // Jumlah reservasi per hari
+                            backgroundColor: 'rgba(231, 76, 60, 0.7)', // Warna grafik
+                            borderColor: '#e74c3c',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching reservations per week:', error));
+
         const options = {
             responsive: true,
             maintainAspectRatio: false,
@@ -153,21 +210,63 @@
                 },
             },
         };
+        // menu populer
+        const ctx4 = document.getElementById('menupopuler').getContext('2d');
+        const menupopuler = new Chart(ctx4, {
+            type: 'pie',
+            data: data4,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        // Rata rata pendapatan
+        const ctx3 = document.getElementById('averagerevenuechart').getContext('2d');
+        const averagerevenuechart = new Chart(ctx3, {
+            type: 'line',
+            data: data3,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        backgroundColor: '#27ae60',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#1e8449',
+                        borderWidth: 1,
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return 'IDR ' + value.toLocaleString(); // Format angka menjadi IDR
+                            },
+                            color: '#333',
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                        },
+                    },
+                    x: {
+                        ticks: {
+                            color: '#333',
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                        },
+                    },
+                },
+            }
+        });
 
-
-        // Di dalam script tag di staff.html
-        fetch('/reservations-per-month')
-            .then(response => {
-                console.log('Received response from /reservations-per-month:', response);
-                return response.json();
-            })
-            .then(data => {
-                console.log('Data from /reservations-per-month:', data);
-                // Lanjutkan dengan proses visualisasi data
-            })
-            .catch(error => {
-                console.error('Error fetching /reservations-per-month:', error);
-            });
 
 
     </script>
