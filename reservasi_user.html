@@ -9,28 +9,30 @@
 </head>
 
 <body>
-    <h1 class="header">Detail Reservasi Saya</h1>
+    <div class="profile-container">
+        <h1 class="header">Detail Reservasi Saya</h1>
+        <!-- Tombol X untuk kembali ke halaman sebelumnya -->
+        <button class="close-button" onclick="goBack()">X</button>
+        <div class="reservation-details">
+            <table id="reservationTable">
+                <thead>
+                    <tr>
+                        <th>Paket</th>
+                        <th>Tanggal</th>
+                        <th>Waktu</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Telepon</th>
+                        <th>Status</th>
 
-    <div class="reservation-details">
-        <table id="reservationTable">
-            <thead>
-                <tr>
-                    <th>Paket</th>
-                    <th>Tanggal</th>
-                    <th>Waktu</th>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Telepon</th>
-                    <th>Status</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data akan dimuat di sini -->
-            </tbody>
-        </table>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data akan dimuat di sini -->
+                </tbody>
+            </table>
+        </div>
     </div>
-
     <script>
         // Fungsi untuk memuat tema yang tersimpan
         function loadSavedTheme() {
@@ -101,7 +103,9 @@
                 tableBody.appendChild(row);
             });
         }
-
+        function goBack() {
+            window.history.back();
+        }
     </script>
 </body>
 

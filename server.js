@@ -9,6 +9,9 @@ const nodemailer = require('nodemailer');// Inisialisasi aplikasi Express
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client('158123500330-rdcsku76df6tc8q8ubohmne58e5tgibn.apps.googleusercontent.com'); // Ganti dengan Client ID Anda
 const app = express();
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+const SECRET_KEY = 'your-secret-key'; // Ganti dengan kunci rahasia yang aman
 
 // Middleware CORS - mengizinkan semua origin
 app.use(cors());
@@ -45,31 +48,64 @@ app.post('/google-login', async (req, res) => {
         const checkUserQuery = 'SELECT * FROM users WHERE email = ?';
         db.query(checkUserQuery, [email], (err, results) => {
             if (err) {
+                console.error('Database error:', err);
                 return res.status(500).json({ success: false, message: 'Server error' });
             }
 
             if (results.length > 0) {
-                // Jika pengguna sudah ada, redirect berdasarkan role yang ada di database
+                // Jika pengguna sudah ada
                 const user = results[0];
                 const redirectUrl = user.role === 'admin' ? 'admin.html' : 'index.html';
-                res.json({ success: true, userId: user.id, role: user.role, redirectUrl });
+
+                // Buat token JWT untuk login
+                const jwt = require('jsonwebtoken');
+                const SECRET_KEY = 'your-secret-key'; // Ganti dengan kunci rahasia Anda
+                const jwtToken = jwt.sign(
+                    { id: user.id, role: user.role },
+                    SECRET_KEY,
+                    { expiresIn: '1h' } // Token berlaku 1 jam
+                );
+
+                return res.json({
+                    success: true,
+                    userId: user.id,
+                    role: user.role,
+                    token: jwtToken,
+                    redirectUrl
+                });
             } else {
                 // Jika pengguna belum ada, tambahkan sebagai customer baru
                 const insertUserQuery = 'INSERT INTO users (email, role) VALUES (?, ?)';
                 db.query(insertUserQuery, [email, 'customer'], (err, result) => {
                     if (err) {
+                        console.error('Database error:', err);
                         return res.status(500).json({ success: false, message: 'Failed to save user' });
                     }
-                    res.json({ success: true, userId: result.insertId, role: 'customer', redirectUrl: 'index.html' });
+
+                    // Buat token JWT untuk pengguna baru
+                    const jwt = require('jsonwebtoken');
+                    const SECRET_KEY = 'your-secret-key';
+                    const jwtToken = jwt.sign(
+                        { id: result.insertId, role: 'customer' },
+                        SECRET_KEY,
+                        { expiresIn: '1h' }
+                    );
+
+                    return res.json({
+                        success: true,
+                        userId: result.insertId,
+                        role: 'customer',
+                        token: jwtToken,
+                        redirectUrl: 'index.html'
+                    });
                 });
             }
         });
     } catch (error) {
-        console.error(error);
+        console.error('Google Token Error:', error);
         res.status(401).json({ success: false, message: 'Invalid Google token' });
     }
 });
-
 // Endpoint untuk login
 app.post('/login', (req, res) => {
     const { usernameOrEmail, password } = req.body;
@@ -77,28 +113,43 @@ app.post('/login', (req, res) => {
     // Query untuk mencari pengguna berdasarkan username atau email
     const query = 'SELECT * FROM users WHERE username = ? OR email = ?';
     db.query(query, [usernameOrEmail, usernameOrEmail], (err, results) => {
-        if (err || results.length === 0) {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+
+        if (results.length === 0) {
             return res.status(401).json({ success: false, message: 'Invalid username/email or password' });
         }
 
-        if (results.length > 0) {
-            const user = results[0];
+        const user = results[0];
 
-            bcrypt.compare(password, user.password, (err, isMatch) => {
-                if (err) {
-                    console.error('Error comparing password:', err);
-                    res.status(500).json({ success: false, message: 'Internal server error' });
-                } else if (isMatch) {
-                    const token = Buffer.from(usernameOrEmail).toString('base64');
+        // Verifikasi password
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) {
+                console.error('Error comparing password:', err);
+                return res.status(500).json({ success: false, message: 'Internal server error' });
+            }
 
-                    res.json({ success: true, userId: user.id, role: user.role, token: token });
-                } else {
-                    res.status(401).json({ success: false, message: 'Unauthorized' });
-                }
+            if (!isMatch) {
+                return res.status(401).json({ success: false, message: 'Invalid username/email or password' });
+            }
+
+            // Jika password cocok, buat token JWT
+            const token = jwt.sign(
+                { id: user.id, role: user.role }, // Payload
+                SECRET_KEY, // Secret key
+                { expiresIn: '1h' } // Token berlaku selama 1 jam
+            );
+
+            // Kirim respons ke klien
+            return res.json({
+                success: true,
+                userId: user.id,
+                role: user.role,
+                token: token
             });
-        } else {
-            res.status(401).json({ success: false, message: 'Unauthorized' });
-        }
+        });
     });
 });
 

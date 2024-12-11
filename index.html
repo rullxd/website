@@ -204,6 +204,8 @@
             if (localStorage.getItem('loginToken')) {
                 // Jika sudah login, hapus token untuk logout
                 localStorage.removeItem('loginToken');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('userRole');
                 console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
                 window.location.href = 'login.html';
             } else {

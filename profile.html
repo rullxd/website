@@ -61,6 +61,9 @@
             loadUserProfile(userId);
         });
 
+        function goBack() {
+            window.history.back();
+        }
         function loadUserProfile(userId) {
             fetch(`http://localhost:3000/profile?user_id=${userId}`)
                 .then(response => response.json())
@@ -118,9 +121,6 @@
             }
         }
 
-        function goBack() {
-            window.history.back();
-        }
 
         function saveProfile(event) {
             event.preventDefault();
