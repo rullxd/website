@@ -614,8 +614,70 @@ app.get('/reservations-per-day', (req, res) => {
         res.json(results);
     });
 });
+app.get('/pesanan-per-minggu', (req, res) => {
+    const query = `
+        SELECT
+    d.day_of_week,
+    COALESCE(SUM(f.food_price * f.quantity), 0) AS total_price
+FROM
+    (
+        SELECT 0 AS day_of_week UNION ALL
+        SELECT 1 UNION ALL
+        SELECT 2 UNION ALL
+        SELECT 3 UNION ALL
+        SELECT 4 UNION ALL
+        SELECT 5 UNION ALL
+        SELECT 6
+    ) AS d
+LEFT JOIN
+    food_orders AS f
+ON
+    d.day_of_week = WEEKDAY(f.order_date)
+    AND YEARWEEK(f.order_date, 1) = YEARWEEK(CURDATE(), 1)
+GROUP BY
+    d.day_of_week
+ORDER BY
+    d.day_of_week;
+
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send(err);
+        }
+
+        res.json(results);
+    });
+});
+
+app.get('/menupopuler', (req, res) => {
+    const query = `
+        SELECT
+    food_name,
+    SUM(quantity) AS total_quantity
+FROM
+    food_orders
+GROUP BY
+    food_name
+ORDER BY
+    total_quantity DESC
+LIMIT 5;
 
 
+
+
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).send(err);
+        }
+
+        res.json(results);
+    });
+});
 // Endpoint to get reservations by user_id
 app.get('/reservations/:userId', (req, res) => {
     const userId = req.params.userId;

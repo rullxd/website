@@ -55,14 +55,14 @@
         </div>
 
         <div class="card">
-            <h2>Rata-Rata Pendapatan</h2>
+            <h2>Pendapatan Mingguan</h2>
             <div class="chart-container">
                 <canvas id="averagerevenuechart"></canvas>
             </div>
         </div>
 
         <div class="card">
-            <h2>Reservasi Per Hari</h2>
+            <h2>Reservasi Mingguan</h2>
             <div class="chart-container">
                 <canvas id="dailyReservationsChart"></canvas>
             </div>
@@ -84,16 +84,7 @@
 
 
         // Data grafik
-        const data3 = {
-            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-            datasets: [{
-                label: 'Rata-rata Pendapatan (IDR)',
-                data: [1500000, 2000000, 1800000, 2200000, 2500000, 3000000, 2800000], // Pendapatan rata-rata per hari
-                backgroundColor: 'rgba(46, 204, 113, 0.7)', // Warna hijau transparan
-                borderColor: '#27ae60', // Warna hijau utama
-                borderWidth: 1
-            }]
-        };
+
         const data4 = {
             labels: ['Siomay Ayam', 'Pangsit Goreng', 'Salad Buah', 'Mie Goreng Seafood'],
             datasets: [{
@@ -211,62 +202,97 @@
             },
         };
         // menu populer
-        const ctx4 = document.getElementById('menupopuler').getContext('2d');
-        const menupopuler = new Chart(ctx4, {
-            type: 'pie',
-            data: data4,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
+        fetch('http://localhost:3000/menupopuler')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('menupopuler').getContext('2d');
+                const menupopuler = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.map(item => item.food_name),
+                        datasets: [{
+                            label: 'Jumlah Terjual',
+                            data: data.map(item => item.total_quantity), // Jumlah reservasi per hari
+                            backgroundColor: [
+                                '#e74c3c', // Merah
+                                '#2ecc71', // Hijau
+                                '#f1c40f', // Kuning
+                                '#8e44ad', // Ungu tua
+                                '#3498db'  // Biru
+                            ],
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
                     }
-                }
-            }
-        });
-        // Rata rata pendapatan
-        const ctx3 = document.getElementById('averagerevenuechart').getContext('2d');
-        const averagerevenuechart = new Chart(ctx3, {
-            type: 'line',
-            data: data3,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    tooltip: {
-                        backgroundColor: '#27ae60',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: '#1e8449',
-                        borderWidth: 1,
+                });
+            })
+            .catch(error => console.error('Error fetching reservations per week:', error));
+        fetch('http://localhost:3000/pesanan-per-minggu')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('averagerevenuechart').getContext('2d');
+                const averagerevenuechart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(item => {
+                            const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                            return dayNames[item.day_of_week];
+                        }),
+                        datasets: [{
+                            label: 'Jumlah Pendapatan',
+                            data: data.map(item => item.total_price), // Jumlah reservasi per hari
+                            backgroundColor: 'rgba(46, 204, 113, 0.7)', // Warna grafik
+                            borderColor: '#27ae60',
+                            borderWidth: 1
+                        }]
                     },
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function (value) {
-                                return 'IDR ' + value.toLocaleString(); // Format angka menjadi IDR
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                backgroundColor: '#27ae60',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#1e8449',
+                                borderWidth: 1,
                             },
-                            color: '#333',
                         },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)',
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return 'IDR ' + value.toLocaleString(); // Format angka menjadi IDR
+                                    },
+                                    color: '#333',
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)',
+                                },
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#333',
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)',
+                                },
+                            },
                         },
-                    },
-                    x: {
-                        ticks: {
-                            color: '#333',
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)',
-                        },
-                    },
-                },
-            }
-        });
-
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching reservations per week:', error));
 
 
     </script>

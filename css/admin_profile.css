@@ -13,6 +13,17 @@ body {
     display: flex;
 }
 
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 60px;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
 /* Sidebar */
 .admin-navbar {
     background-color: #fff;
@@ -187,6 +198,18 @@ body {
 .error-message {
     background-color: #e74c3c;
     color: white;
+}
+
+#profilePhotoInput {
+    display: none;
+    /* Sembunyikan input file */
+    margin-top: 2rem;
+    /* Atur jarak atas untuk menurunkan sedikit */
+}
+
+#photoUploadContainer {
+    display: none;
+    /* Sembunyikan div yang berisi label dan input file */
 }
 
 /* Responsive Design */

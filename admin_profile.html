@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
-<body>
 
+<body>
     <!-- Sidebar for Admin Navigation -->
     <nav class="admin-navbar">
         <div class="top-icons">
@@ -29,13 +29,21 @@
     <div class="profile-container" style="margin-left: 100px;">
         <h1>Profil Admin</h1>
 
-        <!-- Admin Profile Picture -->
+        <!-- Tombol X untuk kembali ke halaman sebelumnya -->
+        <button class="close-button" onclick="goBack()">X</button>
+
+        <!-- Pratinjau Foto Profil -->
         <div class="profile-photo">
-            <img id="profileImage" src="default-profile.png" alt="Foto Profil Admin" width="150" height="150">
+            <img id="profileImage" src="default-profile.png" alt="Foto Profil" width="150" height="150">
         </div>
 
-        <!-- Admin Profile Form -->
+        <!-- Formulir Profil -->
         <form id="profileForm" onsubmit="return false;">
+            <div id="photoUploadContainer">
+                <label>Foto Profil:</label>
+            </div>
+            <input type="file" id="profilePhotoInput" accept="image/*" onchange="previewPhoto()" disabled>
+
             <label>Nama Lengkap:</label>
             <input type="text" id="fullName" placeholder="Nama Lengkap" disabled>
 
@@ -51,11 +59,137 @@
             <label>Bio:</label>
             <textarea id="bio" placeholder="Tentang Anda" disabled></textarea>
 
+            <!-- Tombol Edit/Simpan -->
             <button type="button" id="toggleButton" onclick="toggleEditMode()">Edit Profil</button>
         </form>
     </div>
 
-    <script src="admin_profile.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = localStorage.getItem('userId'); // Ambil userId dari localStorage
+
+            if (!localStorage.getItem('loginToken') || !userId) {
+                // Jika token tidak ada, arahkan pengguna ke halaman login
+                alert('Anda harus login terlebih dahulu.');
+                window.location.href = 'index.html';
+            }
+            loadUserProfile(userId);
+        });
+
+        function loadUserProfile(userId) {
+            fetch(`http://localhost:3000/profile?user_id=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('fullName').value = data.profile.full_name || '';
+                        document.getElementById('email').value = data.profile.email || '';
+                        document.getElementById('phone').value = data.profile.phone || '';
+                        document.getElementById('address').value = data.profile.address || '';
+                        document.getElementById('bio').value = data.profile.bio || '';
+
+                        // Memuat gambar profil jika ada
+                        const profilePhoto = data.profile.profile_photo ? `http://localhost:3000${data.profile.profile_photo}` : 'default-profile.png';
+                        document.getElementById('profileImage').src = profilePhoto;
+                    }
+                })
+                .catch(error => console.error('Error loading profile:', error));
+        }
+
+        function previewPhoto() {
+            const file = document.getElementById('profilePhotoInput').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Fungsi untuk mengaktifkan/mematikan mode edit
+        function toggleEditMode() {
+            const inputs = ['profilePhotoInput', 'fullName', 'email', 'phone', 'address', 'bio'];
+            const isDisabled = document.getElementById('fullName').disabled;
+            const toggleButton = document.getElementById('toggleButton');
+
+            if (isDisabled) {
+                // Ubah ke mode edit
+                inputs.forEach(id => {
+                    document.getElementById(id).disabled = false;
+                });
+                document.getElementById('photoUploadContainer').style.display = 'none';
+                document.getElementById('profilePhotoInput').style.display = 'block'; // Tampilkan input file
+                toggleButton.innerText = 'Simpan Profil';
+                toggleButton.onclick = saveProfile;
+            } else {
+                // Kembali ke mode non-edit tanpa menyimpan
+                inputs.forEach(id => {
+                    document.getElementById(id).disabled = true;
+                });
+                document.getElementById('photoUploadContainer').style.display = 'none';
+                document.getElementById('profilePhotoInput').style.display = 'none'; // Sembunyikan input file
+                toggleButton.innerText = 'Edit Profil';
+                toggleButton.onclick = toggleEditMode;
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function saveProfile(event) {
+            event.preventDefault();
+
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Anda harus login terlebih dahulu.');
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('profilePhotoInput').style.display = 'none'; // Hide file input
+            document.getElementById('toggleButton').innerText = 'Edit Profil';
+            document.getElementById('toggleButton').onclick = toggleEditMode;
+
+            const formData = new FormData();
+            formData.append('user_id', userId);
+            formData.append('full_name', document.getElementById('fullName').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('phone', document.getElementById('phone').value);
+            formData.append('address', document.getElementById('address').value);
+            formData.append('bio', document.getElementById('bio').value);
+
+            const photoFile = document.getElementById('profilePhotoInput').files[0];
+            if (photoFile) {
+                formData.append('profile_photo', photoFile);
+            }
+
+            fetch('http://localhost:3000/edit-profile', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Profil berhasil disimpan!');
+
+                        // Kunci kembali semua input setelah menyimpan
+                        const inputs = ['profilePhotoInput', 'fullName', 'email', 'phone', 'address', 'bio'];
+                        inputs.forEach(id => {
+                            document.getElementById(id).disabled = true;
+                        });
+
+                        // Ubah tombol kembali ke "Edit Profil"
+                        const toggleButton = document.getElementById('toggleButton');
+                        toggleButton.innerText = 'Edit Profil';
+                        toggleButton.onclick = toggleEditMode;
+                    } else {
+                        alert('Gagal menyimpan profil.');
+                    }
+                })
+                .catch(error => console.error('Error saving profile:', error));
+        }
+    </script>
+
 </body>
 
 </html>
