@@ -69,7 +69,40 @@ app.post('/google-login', async (req, res) => {
         res.status(401).json({ success: false, message: 'Invalid Google token' });
     }
 });
-// Endpoint untuk registrasi
+
+// Endpoint untuk login
+app.post('/login', (req, res) => {
+    const { usernameOrEmail, password } = req.body;
+
+    // Query untuk mencari pengguna berdasarkan username atau email
+    const query = 'SELECT * FROM users WHERE username = ? OR email = ?';
+    db.query(query, [usernameOrEmail, usernameOrEmail], (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(401).json({ success: false, message: 'Invalid username/email or password' });
+        }
+
+        if (results.length > 0) {
+            const user = results[0];
+
+            bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) {
+                    console.error('Error comparing password:', err);
+                    res.status(500).json({ success: false, message: 'Internal server error' });
+                } else if (isMatch) {
+                    const token = Buffer.from(usernameOrEmail).toString('base64');
+
+                    res.json({ success: true, userId: user.id, role: user.role, token: token });
+                } else {
+                    res.status(401).json({ success: false, message: 'Unauthorized' });
+                }
+            });
+        } else {
+            res.status(401).json({ success: false, message: 'Unauthorized' });
+        }
+    });
+});
+
+
 // Endpoint untuk registrasi
 app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
@@ -301,37 +334,6 @@ app.post('/verifyCode', (req, res) => {
 
 
 
-// Endpoint untuk login
-app.post('/login', (req, res) => {
-    const { usernameOrEmail, password } = req.body;
-
-    // Query untuk mencari pengguna berdasarkan username atau email
-    const query = 'SELECT * FROM users WHERE username = ? OR email = ?';
-    db.query(query, [usernameOrEmail, usernameOrEmail], (err, results) => {
-        if (err || results.length === 0) {
-            return res.status(401).json({ success: false, message: 'Invalid username/email or password' });
-        }
-
-        if (results.length > 0) {
-            const user = results[0];
-
-            bcrypt.compare(password, user.password, (err, isMatch) => {
-                if (err) {
-                    console.error('Error comparing password:', err);
-                    res.status(500).json({ success: false, message: 'Internal server error' });
-                } else if (isMatch) {
-                    const token = Buffer.from(usernameOrEmail).toString('base64');
-
-                    res.json({ success: true, userId: user.id, role: user.role, token: token });
-                } else {
-                    res.status(401).json({ success: false, message: 'Unauthorized' });
-                }
-            });
-        } else {
-            res.status(401).json({ success: false, message: 'Unauthorized' });
-        }
-    });
-});
 
 
 app.get('/profile', (req, res) => {
