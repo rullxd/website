@@ -190,6 +190,24 @@
         }
     </script>
 
+    <script>
+        function handleLoginLogout() {
+            // Tampilkan dialog konfirmasi
+            const isConfirmed = confirm('Yakin mau logout?');
+
+            if (isConfirmed) {
+                // Jika pengguna memilih "Ya", hapus token dan logout
+                localStorage.removeItem('loginToken');
+                localStorage.removeItem('userId'); // Optional: Hapus userId jika ada
+                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
+                window.location.href = 'login.html'; // Redirect ke halaman login
+            } else {
+                // Jika pengguna memilih "Tidak", batalkan logout
+                console.log('Logout dibatalkan.');
+            }
+        }
+    </script>
+
 </body>
 
 </html>

@@ -34,23 +34,6 @@
         </div>
     </div>
     <script>
-        // Fungsi untuk memuat tema yang tersimpan
-        function loadSavedTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            const userId = localStorage.getItem('userId'); // Ambil userId dari localStorage
-
-            if (!localStorage.getItem('loginToken') || !userId) {
-                // Jika token tidak ada, arahkan pengguna ke halaman login
-                alert('Anda harus login terlebih dahulu.');
-                window.location.href = 'index.html';
-            }
-            loadUserProfile(userId);
-        });
         // Fetch user ID from local storage or URL query parameter
         const userId = localStorage.getItem('userId');
 
@@ -107,6 +90,20 @@
             window.history.back();
         }
     </script>
+
+    <script>
+        // Fungsi untuk memuat tema yang tersimpan
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        }
+
+        // Panggil loadSavedTheme saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadSavedTheme);
+    </script>
+
 </body>
 
 </html>
