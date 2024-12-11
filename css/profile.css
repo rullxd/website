@@ -33,6 +33,13 @@
     --hover-background: rgba(255, 255, 255, 0.05);
 }
 
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--background-secondary);
+}
+
 /* Profil Container */
 .profile-container {
     max-width: 600px;
@@ -77,7 +84,7 @@
 /* Input dan Textarea */
 .profile-container input,
 .profile-container textarea {
-    width: 100%;
+    width: 95%;
     padding: 0.9rem;
     font-size: 1rem;
     color: var(--text-primary);
