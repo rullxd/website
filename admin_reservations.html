@@ -22,7 +22,7 @@
         <div class="icon"><i class="fas fa-cog"></i></div>
         </div>
         <div class="bottom-icons">
-            <a href="admin.html" class="icon" onclick="handleLoginLogout()"><i class="fas fa-sign-out-alt"></i></a>
+            <a href="#" class="icon" onclick="handleLoginLogout()"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </nav>
     <div class="dashboard-container" style="margin-left: 100px;">
@@ -126,6 +126,23 @@
 
         // Memanggil fungsi fetchReservations ketika halaman dimuat
         window.onload = fetchReservations;
+    </script>
+    <script>
+        function handleLoginLogout() {
+            // Tampilkan dialog konfirmasi
+            const isConfirmed = confirm('Yakin mau logout?');
+
+            if (isConfirmed) {
+                // Jika pengguna memilih "Ya", hapus token dan logout
+                localStorage.removeItem('loginToken');
+                localStorage.removeItem('userId'); // Optional: Hapus userId jika ada
+                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
+                window.location.href = 'login.html'; // Redirect ke halaman login
+            } else {
+                // Jika pengguna memilih "Tidak", batalkan logout
+                console.log('Logout dibatalkan.');
+            }
+        }
     </script>
 </body>
 

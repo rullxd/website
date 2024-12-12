@@ -2,7 +2,7 @@
 const express = require('express');
 const cors = require('cors'); // Middleware untuk mengatasi CORS
 const mysql = require('mysql'); // Paket untuk koneksi MySQL
-const bcrypt = require('bcrypt'); // Paket untuk hashing password
+const bcrypt = require('bcryptjs'); // Paket untuk hashing password
 const multer = require('multer'); // Untuk mengunggah file
 const path = require('path'); // Untuk manipulasi path
 const nodemailer = require('nodemailer');// Inisialisasi aplikasi Express
