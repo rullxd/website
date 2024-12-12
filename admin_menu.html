@@ -96,10 +96,11 @@
                                 <td>${item.description}</td>
                                 <td>Rp ${item.price.toLocaleString()}</td>
                                 <td><img src="${item.image_url}" alt="${item.name}" width="50"></td>
-                                <td>
-                                    <button onclick="editMenu(${item.id})">Edit</button>
-                                    <button onclick="deleteMenu(${item.id})">Hapus</button>
-                                </td>
+                               <td>
+    <button class="table-action-button" onclick="editMenu(${item.id})">Edit</button>
+    <button class="table-action-button delete" onclick="deleteMenu(${item.id})">Hapus</button>
+</td>
+
                             `;
                         });
                     }

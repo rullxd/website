@@ -188,25 +188,27 @@ table#menuTable tbody tr:hover {
     transition: background-color 0.3s;
 }
 
-/* Tombol Aksi */
-button {
-    padding: 8px 12px;
+.table-action-button {
+    padding: 5px 10px;
+    margin: 1px;
+    font-size: 14px;
+    color: white;
+    background-color: var(--primary-color);
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    text-align: center;
+    margin-right: 5px;
+    width: 70px;
+    transition: background-color 0.3s, transform 0.2s;
+    /* Ukuran lebar yang sama untuk semua tombol */
 }
 
-button:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
-    background-color: var(--primary-color);
-    color: var(--background-primary);
+.table-action-button:hover {
+    background-color: var(--primary-color-dark);
+    /* Warna teks utama sebagai efek hover */
 }
+
 
 /* Tampilan Responsive untuk Tabel */
 @media (max-width: 768px) {
