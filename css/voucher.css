@@ -1,0 +1,359 @@
+/* Theme variables */
+:root {
+    /* Colors */
+    --primary-color: #e74c3c;
+    --primary-color-dark: #c0392b;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --heading-color: #2c3e50;
+    --background-primary: #fff;
+    --background-secondary: #f9f9f9;
+    --background-gradient-1: linear-gradient(to bottom, var(--background-primary), var(--background-secondary));
+    --background-gradient-2: linear-gradient(to bottom, var(--background-secondary), var(--background-primary));
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-color-strong: rgba(0, 0, 0, 0.2);
+    --overlay-color: rgba(0, 0, 0, 0.5);
+    --hover-background: rgba(0, 0, 0, 0.05);
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+    --primary-color: #ff6b6b;
+    --primary-color-dark: #ff5252;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --heading-color: #f0f0f0;
+    --background-primary: #1a1a1a;
+    --background-secondary: #2d2d2d;
+    --background-gradient-1: linear-gradient(to bottom, var(--background-primary), var(--background-secondary));
+    --background-gradient-2: linear-gradient(to bottom, var(--background-secondary), var(--background-primary));
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-color-strong: rgba(0, 0, 0, 0.4);
+    --overlay-color: rgba(0, 0, 0, 0.7);
+    --hover-background: rgba(255, 255, 255, 0.05);
+}
+
+/* Basic styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--background-primary);
+
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--background-primary);
+    box-shadow: 0 2px 5px var(--shadow-color);
+    padding: 1rem 5%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 60px;
+    /* Sesuaikan ukuran tinggi */
+    width: auto;
+    /* Pertahankan proporsi logo */
+    display: block;
+    /* Pastikan hanya logo yang mempengaruhi ukuran elemen */
+    margin: 0 auto;
+    /* Opsional: Untuk memusatkan logo di dalam div */
+}
+
+.navbar .logo {
+    flex: 0 0 auto;
+    /* Agar elemen logo tidak memengaruhi elemen lainnya di navbar */
+    padding: 0;
+    /* Pastikan tidak ada padding tambahan */
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ddd;
+    flex-shrink: 0;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.user-icon {
+    width: 35px;
+    height: 35px;
+    background-color: var(--background-secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.user-icon i {
+    color: var(--text-secondary);
+}
+
+
+
+@media (max-width: 768px) {
+    .navbar-content {
+        gap: 1rem;
+        /* flex-direction: column;  Menghapus pengaturan kolom agar tetap horizontal */
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .user-section {
+        margin-left: auto;
+        /* Memastikan ikon user tetap berada di sisi kanan */
+    }
+}
+
+
+
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: var(--background-primary);
+    box-shadow: -2px 0 5px var(--shadow-color);
+    transition: right 0.3s ease;
+    z-index: 1000;
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay-color);
+    display: none;
+    z-index: 999;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.sidebar-header {
+    padding: 26px;
+    border-bottom: 1px solid var(--shadow-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    color: var(--text-primary);
+}
+
+.close-btn:hover {
+    background-color: var(--hover-background);
+}
+
+.sidebar-content {
+    padding: 20px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin-bottom: 15px;
+}
+
+.sidebar-menu a {
+    display: block;
+    padding: 10px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color 0.3s;
+    border-radius: 5px;
+}
+
+.sidebar-menu a:hover {
+    background-color: var(--hover-background);
+}
+
+.sidebar-cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: var(--background-primary);
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.sidebar-cta-button:hover {
+    background-color: var(--primary-color-dark);
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    color: var(--text-primary);
+    transition: background-color 0.3s;
+}
+
+.theme-toggle:hover {
+    background-color: var(--hover-background);
+}
+
+.theme-toggle i {
+    font-size: 1.2rem;
+}
+
+.voucher-container {
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #28a745;
+    text-align: center;
+}
+
+.voucher-input {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.voucher-input input{
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    margin-right: 10px;
+}
+
+#voucher-code {
+    padding: 10px;
+    width: 70%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#apply-voucher-button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#apply-voucher-button:hover {
+    background-color: #0056b3;
+}
+
+h2 {
+    margin-top: 20px;
+    color: #333;
+}
+
+.voucher-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.voucher-description {
+    font-size: 14px;
+    color: #555;
+}
+
+.notification {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--overlay-color);
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: top 0.5s ease-in-out;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.show {
+    top: 20px;
+}

@@ -4,22 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Homepage</title>
-    <link rel="stylesheet" href="css/index.css">
+    <title>Reservasi Restoran</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/voucher.css">
 </head>
 
 <body>
+
     <nav class="navbar">
         <div class="navbar-content">
             <div class="logo">
                 <img src="src/logo.png" alt="Logo" class="logo-img">
             </div>
-
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="menu.html">Menu</a>
@@ -28,7 +25,6 @@
                 <a href="review_makanan.html">Review</a>
             </div>
             <div class="user-section">
-                <!-- User Icon -->
                 <div class="user-icon" onclick="toggleSidebar()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -40,10 +36,8 @@
         </div>
     </nav>
 
-    <!-- Overlay -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Menu Pengguna</h2>
@@ -55,7 +49,7 @@
                 <li><a href="#">Riwayat Pesanan</a></li>
                 <li><a href="reservasi_user.html">Reservasi Saya</a></li>
                 <li><a href="voucher.html">Voucher</a></li>
-                <li><a href="pengaturan.html">Pengaturan</a></li>
+                <li><a href="#">Pengaturan</a></li>
                 <li><a href="#">Bantuan</a></li>
                 <li>
                     <a href="#" onclick="toggleTheme()">
@@ -68,68 +62,73 @@
         </div>
     </div>
 
-    <section class="content-section">
-        <div class="text-content">
-            <h1>Welcome</h1>
-            <p>Selamat datang di restoran kami! Kami menawarkan berbagai hidangan lezat yang dibuat dengan bahan-bahan
-                segar dan berkualitas tinggi. Nikmati suasana yang nyaman dan pelayanan yang ramah.</p>
-            <a href="menu.html" class="cta-button">Pesan Sekarang</a>
-        </div>
-        <div class="image-content">
-            <img src="https://storage.googleapis.com/a1aa/image/4NA2K3ArSnK3CZJkU9e4zeIpMnud5RwQStCrvy4qfzx0YfsOB.jpg"
-                alt="Foto restoran yang menarik">
-        </div>
-    </section>
+    <div class="voucher-container">
+        <h1>Voucher Restoran</h1>
+        <p>Masukkan kode voucher Anda untuk mendapatkan diskon.</p>
 
-    <section class="content-section">
-        <div class="text-content">
-            <h1>Menu Spesial</h1>
-            <p>Temukan berbagai menu spesial kami yang diolah oleh chef berpengalaman. Dari hidangan pembuka hingga
-                penutup, setiap sajian dibuat dengan passion untuk memberikan pengalaman kuliner terbaik.</p>
-            <a href="menu.html" class="cta-button">Lihat Menu</a>
+        <div class="voucher-input">
+            <input type="text" id="voucher-code" placeholder="Masukkan kode voucher">
+            <button id="apply-voucher-button">Terapkan Voucher</button>
         </div>
-        <div class="image-content">
-            <img src="https://awsimages.detik.net.id/community/media/visual/2022/06/21/ilustrasi-menu-makan-di-restoran_169.jpeg?w=600&q=90"
-                alt="Menu spesial restoran">
-        </div>
-    </section>
-
-    <section class="content-section">
-        <div class="text-content">
-            <h1>Suasana Nyaman</h1>
-            <p>Rasakan atmosfer yang nyaman dan elegan di restoran kami. Dengan interior yang modern dan pelayanan yang
-                ramah, kami menciptakan pengalaman bersantap yang tak terlupakan untuk Anda dan orang tersayang.</p>
-            <a href="reservasi.html" class="cta-button">Reservasi Sekarang</a>
-        </div>
-        <div class="image-content">
-            <img src="https://static.tildacdn.com/tild3739-6463-4630-a364-333835353636/Simak_artikel_ini_un.jpg"
-                alt="Suasana restoran">
-        </div>
-    </section>
-
-    <section class="features">
-        <h2>Mengapa Memilih Kami?</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <i class="fas fa-utensils"></i>
-                <h3>Menu Berkualitas</h3>
-                <p>Hidangan lezat dengan bahan segar pilihan</p>
+        <h2>Voucher Tersedia</h2>
+        <div id="voucher-list">
+            <div class="voucher-card">
+                <div>
+                    <strong>VOUCHER10</strong>
+                    <p class="voucher-description">Diskon 10% untuk pembelian di atas Rp 100.000</p>
+                </div>
+                
             </div>
-            <div class="feature-card">
-                <i class="fas fa-clock"></i>
-                <h3>Pelayanan Cepat</h3>
-                <p>Waktu penyajian yang efisien</p>
+            <div id="notification" class="notification"></div>
+            <div class="voucher-card">
+                <div>
+                    <strong>FREEDELIVERY</strong>
+                    <p class="voucher-description">Gratis ongkos kirim untuk pemesanan di atas Rp 150.000</p>
+                </div>
+                
             </div>
-            <div class="feature-card">
-                <i class="fas fa-smile"></i>
-                <h3>Suasana Nyaman</h3>
-                <p>Tempat yang cocok untuk berbagai acara</p>
+            <div class="voucher-card">
+                <div>
+                    <strong>BUY1GET1</strong>
+                    <p class="voucher-description">Beli 1 gratis 1
+                    </div>
+            
             </div>
-        </div>
-    </section>
-
+        <div id="notification" class="notification"></div>
+    </div>
 
     <script>
+        // Fungsi untuk menampilkan notifikasi dengan animasi
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`; // Tambahkan tipe (success/error)
+            notification.classList.add('show');
+
+            // Hapus notifikasi setelah 3 detik
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Event listener untuk tombol
+        document.getElementById('apply-voucher-button').addEventListener('click', () => {
+            const voucherCode = document.getElementById('voucher-code').value.trim();
+
+            // Cek validitas kode voucher
+            if (voucherCode === 'VOUCHER10') {
+                showNotification('Voucher berhasil diterapkan! Diskon 10% akan diterapkan pada pesanan Anda.');
+            } else if (voucherCode === 'FREEDELIVERY') {
+                showNotification('Voucher berhasil diterapkan! Ongkos kirim gratis untuk pesanan Anda.');
+            } else if (voucherCode === 'BUY1GET1') {
+                showNotification('Voucher berhasil diterapkan! Beli 1 gratis 1 untuk menu tertentu.');
+            } else {
+                showNotification('Kode voucher tidak valid. Silakan coba lagi.', 'error');
+            }
+        });
+
+    
+
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.querySelector('.overlay');
@@ -138,7 +137,6 @@
             overlay.classList.toggle('active');
         }
 
-        // Close sidebar when clicking outside
         document.addEventListener('click', function (event) {
             const sidebar = document.querySelector('.sidebar');
             const userIcon = document.querySelector('.user-icon');
@@ -148,12 +146,7 @@
                 document.querySelector('.overlay').classList.remove('active');
             }
         });
-    </script>
 
-
-
-    <script>
-        // Fungsi untuk mengubah tema
         function toggleTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
@@ -163,11 +156,8 @@
             } else {
                 html.setAttribute('data-theme', 'dark');
             }
-
-            // Simpan preferensi tema ke localStorage
             localStorage.setItem('theme', html.getAttribute('data-theme') || 'light');
         }
-
         // Fungsi untuk memuat tema yang tersimpan
         function loadSavedTheme() {
             const savedTheme = localStorage.getItem('theme');
@@ -175,26 +165,20 @@
                 document.documentElement.setAttribute('data-theme', savedTheme);
             }
         }
-
         // Panggil loadSavedTheme saat halaman dimuat
         document.addEventListener('DOMContentLoaded', loadSavedTheme);
     </script>
-
-
-
-
     <script>
+
+
 
         document.addEventListener('DOMContentLoaded', () => {
             const loginLogoutButton = document.getElementById('loginLogoutButton');
 
-            // Cek token login
             if (localStorage.getItem('loginToken')) {
-                // Jika token ada, ubah menjadi Logout
                 loginLogoutButton.textContent = 'Logout';
                 loginLogoutButton.href = 'index.html';
             } else {
-                // Jika token tidak ada, tetap sebagai Login
                 loginLogoutButton.textContent = 'Login';
                 loginLogoutButton.href = 'login.html';
             }
@@ -202,21 +186,21 @@
 
         function handleLoginLogout() {
             if (localStorage.getItem('loginToken')) {
-                // Jika sudah login, hapus token untuk logout
                 localStorage.removeItem('loginToken');
-                localStorage.removeItem('userId');
-                localStorage.removeItem('userRole');
-                console.log('Token dihapus: ', localStorage.getItem('loginToken')); // Cek token setelah dihapus
                 window.location.href = 'login.html';
             } else {
-                console.log('Token tidak ditemukan. Pengguna belum login.');
-                // Jika belum login, redirect ke halaman login
                 window.location.href = 'login.html';
             }
         }
-
+    
+        
+    
+       
 
     </script>
+
+
+    
 
 </body>
 
